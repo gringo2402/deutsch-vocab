@@ -10,6 +10,7 @@ German vocabulary lists for the step from **A2 to B1**, built for work in busine
 | [B · Verbs](https://gringo2402.github.io/deutsch-vocab/b-verbs.html) | 500 verbs (200 most frequent + 300 for business and IT) with principal parts, haben/sein, prefixes, cases and prepositions, and six-tense tables |
 | [C · Business & tech words](https://gringo2402.github.io/deutsch-vocab/c-business-tech.html) | 300 nouns, adjectives and phrases for meetings, projects, finance and IT, Swiss usage included |
 | [🏫 Classroom](https://gringo2402.github.io/deutsch-vocab/classroom.html) | One grammar topic a week from class: the logic, rules, exceptions and common mistakes, with German examples, English translations and a short self-check |
+| [📝 Hausaufgaben](https://gringo2402.github.io/deutsch-vocab/hausaufgaben.html) | Homework exercises typed out as on the page: try each gap, then show the solution with an English translation and a one-line explanation |
 
 ## Use it on a phone
 

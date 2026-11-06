@@ -448,7 +448,7 @@
       var tag = ready ? 'a' : 'div';
       var c = el(tag, ready ? { 'class': 'hub-card', href: l.href } : { 'class': 'hub-card coming', 'aria-disabled': 'true' });
       c.innerHTML = '<span class="big" aria-hidden="true">' + esc(l.icon || '📘') + '</span>' +
-        '<span class="status ' + (ready ? 'ready' : '') + '">' + (ready ? esc((l.count || '') + ' ' + (l.count_label || 'words')) : 'coming') + '</span>' +
+        '<span class="status ' + (ready ? 'ready' : '') + '">' + (ready ? esc((l.count || '') + ' ' + (l.count_label || 'words').replace(l.count === 1 ? /s$/ : /$^/, '')) : 'coming') + '</span>' +
         '<h2>' + esc(l.letter ? l.letter + ' · ' + l.title : l.title) + '</h2><p>' + esc(l.description || '') + '</p>';
       mount.appendChild(c);
     });

@@ -1,7 +1,7 @@
 {
   "name": "Deutsch vocab",
   "short_name": "Deutsch",
-  "description": "German vocabulary lists A2 to B1: core words, verbs, business and tech words. Works offline.",
+  "description": "German vocabulary lists A2 to B1: core words, verbs, business and tech words, grammar topics and homework. Works offline.",
   "lang": "en",
   "start_url": "./index.html",
   "scope": "./",
