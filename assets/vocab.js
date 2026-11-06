@@ -448,13 +448,13 @@
       var tag = ready ? 'a' : 'div';
       var c = el(tag, ready ? { 'class': 'hub-card', href: l.href } : { 'class': 'hub-card coming', 'aria-disabled': 'true' });
       c.innerHTML = '<span class="big" aria-hidden="true">' + esc(l.icon || '📘') + '</span>' +
-        '<span class="status ' + (ready ? 'ready' : '') + '">' + (ready ? esc((l.count || '') + ' words') : 'coming') + '</span>' +
-        '<h2>' + esc(l.letter + ' · ' + l.title) + '</h2><p>' + esc(l.description || '') + '</p>';
+        '<span class="status ' + (ready ? 'ready' : '') + '">' + (ready ? esc((l.count || '') + ' ' + (l.count_label || 'words')) : 'coming') + '</span>' +
+        '<h2>' + esc(l.letter ? l.letter + ' · ' + l.title : l.title) + '</h2><p>' + esc(l.description || '') + '</p>';
       mount.appendChild(c);
     });
     var tb = document.getElementById('theme-toggle-slot');
     if (tb) tb.appendChild(themeButton());
   }
 
-  window.VocabApp = { init: init, hub: hub, applyTheme: applyTheme, speech: Speech, ankiText: ankiText };
+  window.VocabApp = { init: init, hub: hub, applyTheme: applyTheme, themeButton: themeButton, speech: Speech, ankiText: ankiText };
 })();

@@ -1,0 +1,71 @@
+/* Classroom module: weekly grammar topics. Uses the colour tokens of vocab.css; light and dark follow it. */
+.cr-list { margin-top: 8px; }
+.cr-en { color: var(--muted); margin: 0; }
+.cr-date { font-size: .8rem; color: var(--muted); margin-top: auto !important; }
+
+.cr-back { margin: 4px 0 8px; }
+.cr-head { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+.cr-title { font-size: clamp(1.6rem, 5vw, 2.2rem); line-height: 1.15; margin: 0; letter-spacing: -.01em; }
+.cr-toc { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.cr-toc .btn { text-decoration: none; color: inherit; font-size: .85rem; padding: 4px 10px; }
+
+.cr-sec { margin: 26px 0; scroll-margin-top: 12px; }
+.cr-sec > h2 { font-size: 1.3rem; margin: 0 0 10px; padding-bottom: 4px; border-bottom: 2px solid var(--accent); }
+.cr-sec p { margin: 0 0 8px; max-width: 75ch; }
+.cr-logic { padding-left: 1.2em; margin: 0; display: grid; gap: 6px; max-width: 75ch; }
+
+.cr-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 12px; box-shadow: var(--shadow); }
+.cr-block h3 { margin: 0 0 8px; font-size: 1.08rem; display: flex; gap: 8px; align-items: baseline; }
+.cr-n { flex: none; display: inline-grid; place-items: center; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--accent); color: var(--accent-fg); font-size: .85rem; }
+.cr-cite { font-size: .8rem; color: var(--muted); margin: 8px 0 0 !important; }
+
+.cr-table-wrap { overflow-x: auto; margin: 8px 0; }
+.cr-table { border-collapse: collapse; min-width: 100%; font-size: .93rem; overflow-wrap: normal; word-break: normal; }
+.cr-table caption { text-align: left; font-weight: 700; padding-bottom: 4px; }
+.cr-table th, .cr-table td { border: 1px solid var(--border); padding: 5px 8px; text-align: left; vertical-align: top; }
+.cr-table thead th { background: var(--surface-2); }
+.cr-table tbody th { font-weight: 600; background: var(--surface-2); white-space: nowrap; }
+.cr-table b { color: var(--accent); }
+
+.cr-ex { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 8px; }
+.cr-ex li { border-left: 3px solid var(--accent); padding: 2px 0 2px 10px; }
+.cr-ex .de { font-weight: 600; }
+.cr-ex .de b, .cr-mistakes .right b { color: var(--accent); }
+.cr-ex .ex-en { color: var(--muted); font-size: .92rem; }
+.cr-ex-note { font-size: .85rem; background: var(--surface-2); border-radius: 6px; padding: 3px 8px; margin-top: 3px; }
+.cr-ex-note::before { content: "💡 "; }
+.cr-ex .say, .cr-mistakes .say { font-size: .85rem; padding: 0 5px; margin-left: 6px; vertical-align: baseline; }
+
+.cr-mistakes { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.cr-mistakes li { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; }
+.cr-mistakes .wrong { color: var(--die); text-decoration: line-through; text-decoration-thickness: 1px; }
+.cr-mistakes .right { color: var(--das); font-weight: 600; }
+.cr-why { color: var(--muted); font-size: .9rem; margin-top: 3px; }
+
+.cr-later { background: var(--lvl-up); color: var(--lvl-up-fg); border-radius: 10px; padding: 10px 12px; margin: 10px 0; max-width: 75ch; }
+
+.cr-how { background: var(--surface-2); border-radius: 10px; padding: 10px 12px; margin: 10px 0; }
+.cr-how p { margin: 4px 0; }
+.cr-worked { border-top: 1px dashed var(--border); margin-top: 6px; padding-top: 6px; }
+.cr-tag { display: inline-block; font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: 2px; }
+.cr-items { padding-left: 1.4em; display: grid; gap: 14px; margin: 14px 0; }
+.cr-q { margin-bottom: 6px; }
+.cr-type { display: inline-block; font-size: .72rem; border: 1px solid var(--border); border-radius: 6px; padding: 0 5px; margin-right: 6px; color: var(--muted); }
+.cr-answer-row { display: flex; gap: 6px; }
+.cr-answer-row .cr-input { flex: 1; min-width: 0; }
+.cr-result { margin-top: 6px; border-radius: 8px; padding: 6px 10px; font-size: .93rem; }
+.cr-result.ok { background: var(--das-soft); }
+.cr-result.compare { background: var(--lvl-up); color: var(--lvl-up-fg); }
+.cr-result.compare .cr-why { color: inherit; }
+.cr-score { font-weight: 600; }
+
+@media (max-width: 520px) {
+  .cr-table { font-size: .82rem; }
+  .cr-table th, .cr-table td { padding: 4px 3px; }
+  .cr-block { padding: 12px; }
+}
+
+@media print {
+  .cr-answer-row, .cr-result, .cr-score { display: none !important; }
+  .cr-block, .cr-mistakes li { break-inside: avoid; box-shadow: none; }
+}
