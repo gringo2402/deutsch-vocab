@@ -10,6 +10,8 @@
   var TOPICS = (window.VOCAB_CLASSROOM || []).slice().sort(function (a, b) { return b.week - a.week; });
   var app = document.getElementById('app');
   var Speech = window.VocabApp ? window.VocabApp.speech : null;
+  var I = window.I18n || { t: function (k, v, f) { return f != null ? f : k; } };
+  function T(k, v, f) { return I.t(k, v, f); }
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -24,12 +26,13 @@
     return (Array.isArray(text) ? text : [text]).filter(Boolean).map(function (p) { return '<p>' + md(p) + '</p>'; }).join('');
   }
   function date(iso) {
+    if (I.date) return I.date(iso);
     var d = new Date(iso + 'T12:00:00');
     return isNaN(d) ? iso : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
   }
   function sayBtn(text) {
     if (!Speech || !Speech.ok) return '';
-    return '<button type="button" class="say" data-say="' + esc(plain(text)) + '" aria-label="Read aloud" title="Read aloud">🔊</button>';
+    return '<button type="button" class="say" data-say="' + esc(plain(text)) + '" aria-label="' + esc(T('say')) + '" title="' + esc(T('say')) + '">🔊</button>';
   }
 
   /* ---------- building blocks ---------- */
@@ -51,7 +54,7 @@
   function cite(topic, id) {
     var s = (topic.sources || []).filter(function (x) { return x.id === id; })[0];
     if (!s) return '';
-    return '<p class="cr-cite">Source: <a href="' + esc(s.url) + '" rel="noopener" target="_blank">' + esc(s.title) + '</a></p>';
+    return '<p class="cr-cite">' + esc(T('cr.source')) + ' <a href="' + esc(s.url) + '" rel="noopener" target="_blank">' + esc(s.title) + '</a></p>';
   }
   function block(topic, r, n) {
     return '<article class="cr-block">' +
@@ -73,18 +76,18 @@
     var types = Object.keys(sc.types).map(function (k) {
       var t = sc.types[k];
       return '<div class="cr-how"><b>' + md(t.label) + '</b>' + paras(t.instruction) +
-        '<div class="cr-worked"><span class="cr-tag">Worked example (not a test item)</span>' +
+        '<div class="cr-worked"><span class="cr-tag">' + esc(T('cr.worked')) + '</span>' +
         '<div>' + md(t.example.q) + '</div><div>→ <b>' + md(t.example.a) + '</b></div>' +
         (t.example.why ? '<div class="cr-why">' + md(t.example.why) + '</div>' : '') + '</div></div>';
     }).join('');
     var items = sc.items.map(function (it, i) {
       return '<li class="cr-item" data-i="' + i + '">' +
         '<div class="cr-q"><span class="cr-type">' + md(sc.types[it.type].label) + '</span>' + md(it.q) + '</div>' +
-        '<div class="cr-answer-row"><input type="text" class="search cr-input" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Your answer to question ' + (i + 1) + '">' +
-        '<button type="button" class="btn cr-check">Check</button></div>' +
+        '<div class="cr-answer-row"><input type="text" class="search cr-input" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="' + esc(T('cr.answer.aria', { n: i + 1 })) + '">' +
+        '<button type="button" class="btn cr-check">' + esc(T('cr.check')) + '</button></div>' +
         '<div class="cr-result" hidden></div></li>';
     }).join('');
-    return '<p>Write your answer, then tap <b>Check</b>. You can ask your tutor, or Claude, what an item wants. Other correct German phrasings count too: compare with the key.</p>' +
+    return '<p>' + T('cr.sc.intro') + '</p>' +
       types + '<ol class="cr-items">' + items + '</ol>' +
       '<p class="cr-score" aria-live="polite"></p>';
   }
@@ -95,7 +98,7 @@
       var keys = Object.keys(done);
       var right = keys.filter(function (k) { return done[k]; }).length;
       var el = app.querySelector('.cr-score');
-      if (el) el.textContent = keys.length ? 'Checked ' + keys.length + ' of ' + sc.items.length + ' · exact matches: ' + right : '';
+      if (el) el.textContent = keys.length ? T('cr.score', { n: keys.length, total: sc.items.length, right: right }) : '';
     }
     function check(li) {
       var i = +li.getAttribute('data-i');
@@ -105,8 +108,8 @@
       var ok = it.a.some(function (a) { return norm(a) === norm(val); });
       res.hidden = false;
       res.className = 'cr-result ' + (ok ? 'ok' : 'compare');
-      res.innerHTML = (ok ? '<b>✓ Correct.</b> ' : (val.trim() ? '<b>Compare with the key.</b> Your answer: <i>' + esc(val) + '</i><br>' : '<b>Key:</b> ')) +
-        (ok && it.a.length === 1 ? '' : 'Key: <b>' + it.a.map(md).join('</b> or <b>') + '</b>') +
+      res.innerHTML = (ok ? '<b>' + esc(T('cr.correct')) + '</b> ' : (val.trim() ? '<b>' + esc(T('cr.compare')) + '</b> ' + esc(T('cr.yours')) + ' <i>' + esc(val) + '</i><br>' : '')) +
+        (ok && it.a.length === 1 ? '' : esc(T('cr.key')) + ' <b>' + it.a.map(md).join('</b> ' + esc(T('cr.or')) + ' <b>') + '</b>') +
         '<div class="cr-why">' + md(it.why) + '</div>';
       done[i] = ok;
       score();
@@ -119,38 +122,37 @@
 
   /* ---------- views ---------- */
   function listView() {
-    document.title = 'Classroom · German grammar topics';
-    if (!TOPICS.length) { app.innerHTML = '<p>No topics yet.</p>'; return; }
+    document.title = T('cr.doc');
+    if (!TOPICS.length) { app.innerHTML = '<p>' + esc(T('cr.none')) + '</p>'; return; }
     app.innerHTML = '<div class="hub cr-list">' + TOPICS.map(function (t) {
       return '<a class="hub-card" href="#' + esc(t.id) + '">' +
-        '<span class="status ready">Week ' + t.week + ' · ' + esc(t.level) + '</span>' +
+        '<span class="status ready">' + esc(T('cr.week', { n: t.week })) + ' · ' + esc(t.level) + '</span>' +
         '<h2>' + md(t.title) + '</h2><p class="cr-en">' + md(t.title_en) + '</p>' +
-        '<p>' + md(t.summary) + '</p><p class="cr-date">Added ' + esc(date(t.added)) + '</p></a>';
+        '<p>' + md(t.summary) + '</p><p class="cr-date">' + esc(T('cr.added', { d: date(t.added) })) + '</p></a>';
     }).join('') + '</div>';
   }
 
   function topicView(t) {
-    document.title = t.title + ' · Classroom';
-    var toc = [['purpose', 'What it\'s for'], ['logic', 'The logic'], ['rules', 'Rules'], ['exceptions', 'Exceptions'],
-      ['mistakes', 'Common mistakes'], ['examples', 'Examples'], ['selfcheck', 'Self-check'], ['sources', 'Sources']];
-    var h = '<p class="crumbs cr-back"><a href="#">← All topics</a></p>' +
-      '<div class="cr-head"><span class="status ready">Week ' + t.week + ' · ' + esc(t.level) + '</span>' +
-      '<h2 class="cr-title">' + md(t.title) + '</h2><p class="cr-en">' + md(t.title_en) + ' · added ' + esc(date(t.added)) + '</p>' +
-      '<nav class="cr-toc no-print" aria-label="Sections">' + toc.map(function (s) {
+    document.title = t.title + ' · ' + T('list.classroom.title');
+    var toc = ['purpose', 'logic', 'rules', 'exceptions', 'mistakes', 'examples', 'selfcheck', 'sources'].map(function (k) { return [k, T('cr.' + k)]; });
+    var h = '<p class="crumbs cr-back"><a href="#">' + esc(T('cr.back')) + '</a></p>' +
+      '<div class="cr-head"><span class="status ready">' + esc(T('cr.week', { n: t.week })) + ' · ' + esc(t.level) + '</span>' +
+      '<h2 class="cr-title">' + md(t.title) + '</h2><p class="cr-en">' + md(t.title_en) + ' · ' + esc(T('cr.addedLower', { d: date(t.added) })) + '</p>' +
+      '<nav class="cr-toc no-print" aria-label="' + esc(T('cr.sec.aria')) + '">' + toc.map(function (s) {
         return '<a class="btn" href="#' + esc(t.id) + '/' + s[0] + '">' + s[1] + '</a>';
       }).join('') + '</nav></div>';
-    h += section('purpose', 'What it\'s for', paras(t.purpose));
-    h += section('logic', 'The logic', '<ul class="cr-logic">' + t.logic.map(function (p) { return '<li>' + md(p) + '</li>'; }).join('') + '</ul>');
-    h += section('rules', 'Rules', t.rules.map(function (r, i) { return block(t, r, i + 1); }).join(''));
-    h += section('exceptions', 'Exceptions', t.exceptions.map(function (r) { return block(t, r); }).join(''));
-    h += section('mistakes', 'Common mistakes', '<ul class="cr-mistakes">' + t.mistakes.map(function (m) {
+    h += section('purpose', T('cr.purpose'), paras(t.purpose));
+    h += section('logic', T('cr.logic'), '<ul class="cr-logic">' + t.logic.map(function (p) { return '<li>' + md(p) + '</li>'; }).join('') + '</ul>');
+    h += section('rules', T('cr.rules'), t.rules.map(function (r, i) { return block(t, r, i + 1); }).join(''));
+    h += section('exceptions', T('cr.exceptions'), t.exceptions.map(function (r) { return block(t, r); }).join(''));
+    h += section('mistakes', T('cr.mistakes'), '<ul class="cr-mistakes">' + t.mistakes.map(function (m) {
       return '<li><div class="wrong">✗ ' + md(m.wrong) + '</div><div class="right">✓ ' + md(m.right) + sayBtn(m.right) + '</div>' +
         '<div class="cr-why">' + md(m.why) + '</div></li>';
     }).join('') + '</ul>');
-    h += section('examples', 'Examples', examples(t.examples));
-    if (t.later) h += '<aside class="cr-later"><b>Comes later:</b> ' + md(t.later) + '</aside>';
-    h += section('selfcheck', 'Self-check', selfcheck(t));
-    h += section('sources', 'Sources', '<ul>' + t.sources.map(function (s) {
+    h += section('examples', T('cr.examples'), examples(t.examples));
+    if (t.later) h += '<aside class="cr-later"><b>' + esc(T('cr.later')) + '</b> ' + md(t.later) + '</aside>';
+    h += section('selfcheck', T('cr.selfcheck'), selfcheck(t));
+    h += section('sources', T('cr.sources'), '<ul>' + t.sources.map(function (s) {
       return '<li><a href="' + esc(s.url) + '" rel="noopener" target="_blank">' + esc(s.title) + '</a>' + (s.note ? ' · ' + md(s.note) : '') + '</li>';
     }).join('') + '</ul>');
     app.innerHTML = h;

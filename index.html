@@ -7,6 +7,8 @@
 <meta name="description" content="German vocabulary lists for an A2 to B1 learner in business and technology: core words, verbs, business and tech words.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%87%A9%F0%9F%87%AA%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/vocab.css">
+<script src="data/ui.js"></script>
+<script src="assets/i18n.js"></script>
 <script src="assets/vocab.js"></script>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
@@ -22,7 +24,7 @@
     <div class="head-row">
       <div>
         <h1>Deutsch vocab</h1>
-        <p class="lede">Three word lists for the step from A2 to B1, built for work in business and technology. Works offline once opened: on a phone, add it to your home screen.</p>
+        <p class="lede" data-i18n="home.lede">Word lists, grammar topics and homework for the step from A2 to B1, built for work in business and technology. Works offline once opened: on a phone, add it to your home screen.</p>
       </div>
       <div id="theme-toggle-slot" class="no-print"></div>
     </div>
@@ -32,33 +34,31 @@
   <div class="hub" id="hub"></div>
 
   <section class="info">
-    <h2>How the colours work</h2>
+    <h2 data-i18n="home.colours.h">How the colours work</h2>
     <div class="legend">
       <span class="chip der">der</span> masculine
       <span class="chip die">die</span> feminine
       <span class="chip das">das</span> neuter
-      <span class="chip pl">die</span> plural (always neutral grey)
+      <span class="chip pl">die</span> <span data-i18n="home.legend.plural">plural (always neutral grey)</span>
     </div>
-    <p>Every noun card has a coloured edge in its gender colour, so the article sticks visually. Level badges come from the Goethe-Institut lists:</p>
+    <p data-i18n="home.colours.p">Every noun card has a coloured edge in its gender colour, so the article sticks visually. Level badges come from the Goethe-Institut lists:</p>
     <div class="legend">
       <span class="level A1">A1</span><span class="level A2">A2</span><span class="level B1">B1</span>
-      <span class="level up">above B1</span> content word not in the A1–B1 lists
-      <span class="level nl">not listed</span> function word or adverb the lists don't show as a headword
+      <span class="level up" data-i18n="level.up">above B1</span> <span data-i18n="home.level.up">content word not in the A1–B1 lists</span>
+      <span class="level nl" data-i18n="level.nl">not listed</span> <span data-i18n="home.level.nl">function word or adverb the lists don't show as a headword</span>
     </div>
 
-    <h2>How to study with a list</h2>
+    <h2 data-i18n="home.study.h">How to study with a list</h2>
     <ul>
-      <li><b>Filter</b> by theme, level or word type, or search in German or English.</li>
-      <li><b>🎯 Test me</b> hides the English. Say the meaning, then tap the card to check. <b>🔀 Shuffle</b> mixes the order.</li>
-      <li><b>🔊</b> reads the word or the example aloud (Swiss German voice if your system has one).</li>
-      <li><b>⬇ Export for Anki</b> downloads the words you have filtered as a tab-separated file. In Anki: File › Import, pick the file, check that field 1 = Front and field 2 = Back.</li>
-      <li>Print a filtered list from the browser for paper review; English is always shown in print.</li>
+      <li data-i18n="home.study.1"><b>Filter</b> by theme, level or word type, or search in German or English.</li>
+      <li data-i18n="home.study.2"><b>🎯 Test me</b> hides the translation. Say the meaning, then tap the card to check. <b>🔀 Shuffle</b> mixes the order.</li>
+      <li data-i18n="home.study.3"><b>🔊</b> reads the word or the example aloud (Swiss German voice if your system has one).</li>
+      <li data-i18n="home.study.4"><b>⬇ Export for Anki</b> downloads the words you have filtered as a tab-separated file. In Anki: File › Import, pick the file, check that field 1 = Front and field 2 = Back.</li>
+      <li data-i18n="home.study.5">Print a filtered list from the browser for paper review; the translation is always shown in print.</li>
     </ul>
   </section>
 </main>
-<footer class="wrap foot">
-  Sources: IDS Mannheim DeReWo, Leipzig Corpora Collection, Goethe-Institut word lists, Wiktionary-derived noun data. See <code>_data/SOURCES.md</code>.
-</footer>
+<footer class="wrap foot" data-i18n="home.foot">Sources: IDS Mannheim DeReWo, Leipzig Corpora Collection, Goethe-Institut word lists, Wiktionary-derived noun data. See <code>_data/SOURCES.md</code>.</footer>
 <script src="data/lists.js"></script>
 <script>
   VocabApp.hub({ lists: window.VOCAB_LISTS, mount: document.getElementById('hub') });

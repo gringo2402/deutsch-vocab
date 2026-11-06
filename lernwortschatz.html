@@ -8,6 +8,8 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%93%92%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/vocab.css">
 <link rel="stylesheet" href="assets/lws.css">
+<script src="data/ui.js"></script>
+<script src="assets/i18n.js"></script>
 <script src="assets/vocab.js"></script>
 <script src="assets/lws.js"></script>
 <link rel="manifest" href="manifest.webmanifest">
@@ -23,25 +25,22 @@
   <div class="wrap">
     <div class="crumbs"><a href="index.html">Deutsch vocab</a> › Lernwortschatz</div>
     <h1>📒 Lernwortschatz</h1>
-    <p class="lede">The word list from <i>Schritte plus Neu 5</i>, lesson by lesson. Each card shows the word as the book prints it, its example sentence and English translations, in the sense the sentence uses. Pick a lesson or batch to study only the new words. Swiss spelling (ss, never the Eszett).</p>
-    <div class="legend" aria-label="Legend">
-      <span class="chip der">der</span> masculine
-      <span class="chip die">die</span> feminine
-      <span class="chip das">das</span> neuter
-      <span class="chip pl">die</span> plural
-      <span class="level A1">A1</span><span class="level A2">A2</span><span class="level B1">B1</span><span class="level up">above B1</span><span class="level nl">not listed</span>
+    <p class="lede" data-i18n="lws.lede">The word list from <i>Schritte plus Neu 5</i>, lesson by lesson. Each card shows the word as the book prints it, its example sentence and translations, in the sense the sentence uses. Pick a lesson or batch to study only the new words. Swiss spelling (ss, never the Eszett).</p>
+    <div class="legend" aria-label="Legend" data-i18n-attr="aria-label:legend.aria">
+      <span class="chip der">der</span> <span data-i18n="legend.masc">masculine</span>
+      <span class="chip die">die</span> <span data-i18n="legend.fem">feminine</span>
+      <span class="chip das">das</span> <span data-i18n="legend.neut">neuter</span>
+      <span class="chip pl">die</span> <span data-i18n="legend.plural">plural</span>
+      <span class="level A1">A1</span><span class="level A2">A2</span><span class="level B1">B1</span><span class="level up" data-i18n="level.up">above B1</span><span class="level nl" data-i18n="level.nl">not listed</span>
       <span id="voice-status"></span>
     </div>
     <div id="lws-tips"></div>
   </div>
 </header>
 <div class="wrap" id="app"></div>
-<footer class="wrap foot">
-  Words and example sentences typed from the learner's course book for private study. Translations and notes are original. Levels: Goethe-Institut word lists A1, A2, B1. Gender and plural checked against Wiktionary-derived german-nouns data (CC BY-SA).
-</footer>
+<footer class="wrap foot" data-i18n="lws.foot">Words and example sentences typed from the learner's course book for private study. Translations and notes are original; word translations into Italian, French and Spanish are compared with the German Wiktionary. Levels: Goethe-Institut word lists A1, A2, B1. Gender and plural checked against Wiktionary-derived german-nouns data (CC BY-SA).</footer>
 <script src="data/themes.js"></script>
-<script src="data/lws.js"></script>
-<script src="data/lws_meta.js"></script>
+<script>I18n.load('lws'); I18n.load('lws_meta');</script>
 <script>
   VocabApp.init({
     list: 'lws',
@@ -49,11 +48,11 @@
     themes: window.VOCAB_THEMES,
     mount: document.getElementById('app'),
     exportName: 'deutsch-lernwortschatz',
-    orderLabel: 'Sort: book order',
+    orderLabel: I18n.t('s.book'),
     filters: [
-      { key: 'lesson', label: 'Lesson', get: function (e) { return VocabLWS.lessonLabel(e); } },
-      { key: 'section', label: 'Section', get: function (e) { return e.section; } },
-      { key: 'batch', label: 'Batch', get: function (e) { return VocabLWS.batchLabel(e); } }
+      { key: 'lesson', label: I18n.t('lws.f.lesson'), get: VocabLWS.lessonValue, show: VocabLWS.lessonShow },
+      { key: 'section', label: I18n.t('lws.f.section'), get: function (e) { return e.section; } },
+      { key: 'batch', label: I18n.t('lws.f.batch'), get: VocabLWS.batchValue, show: VocabLWS.batchShow }
     ]
   });
   VocabLWS.start(window.VOCAB_LWS, window.VOCAB_LWS_META, document.getElementById('app'), document.getElementById('lws-tips'));

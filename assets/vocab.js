@@ -21,6 +21,10 @@
   var PERSONS = [['ich', 'ich'], ['du', 'du'], ['er', 'er/sie/es'], ['wir', 'wir'], ['ihr', 'ihr'], ['sie', 'sie/Sie']];
   var CASE_LABEL = { nom: 'Nom', akk: 'Akk', dat: 'Dat', gen: 'Gen', none: '' };
 
+  /* ---------- language (assets/i18n.js; English if it isn't loaded) ---------- */
+  var I = window.I18n || { t: function (k, v, f) { return f != null ? f : k; }, isFallback: function () { return false; }, lang: 'en' };
+  function T(k, v, f) { return I.t(k, v, f); }
+
   /* ---------- storage (never required) ---------- */
   function load(key, fallback) {
     try { var v = window.localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; }
@@ -46,7 +50,7 @@
     function paint() {
       var m = load(THEME_KEY, 'auto');
       b.textContent = icons[m] || icons.auto;
-      b.title = 'Colour theme: ' + m + ' (click to change)';
+      b.title = T('ct.title', { mode: T('ct.' + m) });
       b.setAttribute('aria-label', b.title);
     }
     b.addEventListener('click', function () {
@@ -67,6 +71,9 @@
   function fold(s) {
     return String(s || '').toLowerCase().replace(ESZETT, 'ss').normalize('NFD').replace(/[̀-ͯ]/g, '');
   }
+  function posLabel(p) { return T('pos.' + p, null, POS_LABEL[p] || p); }
+  function levelLabel(l) { return l === 'above B1' ? T('level.up') : (l === 'not listed' ? T('level.nl') : l); }
+  function themeLabel(id, t) { return T('theme.' + id, null, t ? t.en : id); }
   function levelClass(l) { return l === 'above B1' ? 'up' : (l === 'not listed' ? 'nl' : l); }
   function genderClass(g) { return g ? 'g-' + g : ''; }
   function chipClass(g) { return { m: 'der', f: 'die', n: 'das', mf: 'mf', pl: 'pl' }[g] || ''; }
@@ -107,8 +114,8 @@
       window.speechSynthesis.speak(u);
     },
     label: function () {
-      if (!this.ok) return 'speech not available in this browser';
-      return this.voice ? 'voice: ' + this.voice.name + ' (' + this.voice.lang + ')' : 'voice: browser default (no German voice found)';
+      if (!this.ok) return T('voice.none');
+      return this.voice ? T('voice.is', { name: this.voice.name, lang: this.voice.lang }) : T('voice.default');
     }
   };
   if (Speech.ok) {
@@ -128,17 +135,17 @@
     var h = '<div class="verb-line"><span class="pp">' + esc(pp.praesens_er) + ' · ' + esc(pp.praeteritum_er) +
       ' · ' + esc(auxForm) + ' ' + esc(pp.partizip2) + '</span></div>';
     var tags = [];
-    if (e.auxiliary) tags.push('Perfekt with ' + e.auxiliary);
-    if (e.separable) tags.push('separable' + (e.prefix ? ': ' + e.prefix + '|' + e.lemma.slice(e.prefix.length) : ''));
-    if (e.reflexive) tags.push('reflexive');
+    var sepAt = -1;
+    if (e.auxiliary) tags.push(T('verb.perfekt', { aux: e.auxiliary }));
+    if (e.separable) { sepAt = tags.length; tags.push(T('verb.sep') + (e.prefix ? ': ' + e.prefix + '|' + e.lemma.slice(e.prefix.length) : '')); }
+    if (e.reflexive) tags.push(T('verb.refl'));
     (e.governs || []).forEach(function (g) {
       var c = CASE_LABEL[g.case] || '';
       tags.push(g.prep ? g.prep + ' + ' + c : (c ? '+ ' + c : ''));
     });
-    tags = tags.filter(Boolean);
-    if (tags.length) h += '<div class="tags">' + tags.map(function (t) { return '<span class="tag">' + esc(t) + '</span>'; }).join('') + '</div>';
+    if (tags.filter(Boolean).length) h += '<div class="tags">' + tags.map(function (t, i) { return t ? '<span class="tag' + (i === sepAt ? ' tag-sep' : '') + '">' + esc(t) + '</span>' : ''; }).join('') + '</div>';
     if (e.conjugation) {
-      h += '<details class="conj"><summary>Conjugation tables</summary><div class="conj-grid">';
+      h += '<details class="conj"><summary>' + esc(T('verb.conj')) + '</summary><div class="conj-grid">';
       TENSES.forEach(function (t) {
         var f = e.conjugation[t[0]];
         if (!f) return;
@@ -154,21 +161,21 @@
   function card(e, ctx) {
     var t = ctx.themes[e.theme] || { icon: '•', en: e.theme };
     var rank = '#' + e.position + (e.rank ? ' · DeReWo ' + e.rank : '') + (e.rank_leipzig ? ' · Leipzig ' + e.rank_leipzig : '');
-    var h = '<div class="meta"><span class="theme-ico" title="' + esc(t.en) + '" aria-label="theme: ' + esc(t.en) + '">' + t.icon + '</span>' +
-      '<span class="level ' + levelClass(e.level) + '" title="CEFR level (Goethe word lists)">' + esc(e.level) + '</span>' +
-      '<span class="pos">' + esc(POS_LABEL[e.pos] || e.pos) + '</span>' +
+    var h = '<div class="meta"><span class="theme-ico"title="' + esc(themeLabel(e.theme, t)) + '" aria-label="' + esc(T('card.theme', { t: themeLabel(e.theme, t) })) + '">' + t.icon + '</span>' +
+      '<span class="level ' + levelClass(e.level) + '" title="' + esc(T('card.level.t')) + '">' + esc(levelLabel(e.level)) + '</span>' +
+      '<span class="pos">' + esc(posLabel(e.pos)) + '</span>' +
       (e.domain ? '<span class="tag">' + esc(e.domain) + '</span>' : '') +
-      '<span class="rank" title="Position in this list · corpus frequency rank">' + esc(rank) + '</span></div>';
+      '<span class="rank" title="' + esc(T('card.rank.t')) + '">' + esc(rank) + '</span></div>';
     h += '<div class="headword">' + (e.article ? '<span class="chip ' + chipClass(e.gender) + '">' + esc(e.gender === 'pl' ? 'die (Pl.)' : e.article) + '</span>' : '') +
-      '<span class="lemma" lang="de">' + esc(e.lemma) + '</span>' + sayBtn(spoken(e), 'Say ' + headword(e)) + '</div>';
+      '<span class="lemma" lang="de">' + esc(e.lemma) + '</span>' + sayBtn(spoken(e), T('card.say', { w: headword(e) })) + '</div>';
     if (e.pos === 'noun' && e.gender !== 'pl') {
-      h += '<div class="plural">' + (e.plural ? 'Plural: <span class="chip pl">die</span> <b lang="de">' + esc(e.plural) + '</b>' : 'no plural') + '</div>';
+      h += '<div class="plural">' + (e.plural ? esc(T('card.plural')) + ' <span class="chip pl">die</span> <b lang="de">' + esc(e.plural) + '</b>' : esc(T('card.noPlural'))) + '</div>';
     }
     h += verbBlock(e);
     h += '<div class="en hideable"><ol>' + e.en.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ol></div>';
     if (e.note) h += '<div class="note hideable"><span>' + esc(e.note) + '</span></div>';
     if (e.example && e.example.de) {
-      h += '<div class="example"><span class="de" lang="de">' + esc(e.example.de) + '</span>' + sayBtn(e.example.de, 'Say the example') +
+      h += '<div class="example"><span class="de" lang="de">' + esc(e.example.de) + '</span>' + sayBtn(e.example.de, T('card.sayEx')) +
         '<span class="ex-en hideable"><span>' + esc(e.example.en) + '</span></span></div>';
     }
     var c = el('article', { 'class': 'card ' + genderClass(e.gender), id: e.id }, h);
@@ -236,12 +243,12 @@
     var row2 = el('div', { 'class': 'row' });
     controls.appendChild(row1); controls.appendChild(row2);
 
-    var q = el('input', { type: 'search', 'class': 'search', placeholder: 'Search German or English…', 'aria-label': 'Search German or English' });
+    var q = el('input', { type: 'search', 'class': 'search', placeholder: T('search.ph'), 'aria-label': T('search.ph') });
     q.value = st.q;
     row1.appendChild(q);
 
-    function select(label, options, value) {
-      var s = el('select', { 'aria-label': label });
+    function select(key, label, options, value) {
+      var s = el('select', { 'aria-label': label, 'data-key': key });
       options.forEach(function (o) {
         var opt = el('option', { value: o[0] }, esc(o[1]));
         s.appendChild(opt);
@@ -253,48 +260,48 @@
     function present(get) { var seen = {}; data.forEach(function (e) { var v = get(e); if (v != null && v !== '') seen[v] = (seen[v] || 0) + 1; }); return seen; }
 
     var tCount = present(function (e) { return e.theme; });
-    var sTheme = select('Theme', [['', 'All themes']].concat(themeOrder.filter(function (id) { return tCount[id]; }).map(function (id) {
-      return [id, themes[id].icon + ' ' + themes[id].en + ' (' + tCount[id] + ')'];
+    var sTheme = select('theme', T('f.theme'), [['', T('f.allThemes')]].concat(themeOrder.filter(function (id) { return tCount[id]; }).map(function (id) {
+      return [id, themes[id].icon + ' ' + themeLabel(id, themes[id]) + ' (' + tCount[id] + ')'];
     })), st.theme);
     var lCount = present(function (e) { return e.level; });
-    var sLevel = select('Level', [['', 'All levels']].concat(LEVELS.filter(function (l) { return lCount[l]; }).map(function (l) {
-      return [l, l + ' (' + lCount[l] + ')'];
+    var sLevel = select('level', T('f.level'), [['', T('f.allLevels')]].concat(LEVELS.filter(function (l) { return lCount[l]; }).map(function (l) {
+      return [l, levelLabel(l) + ' (' + lCount[l] + ')'];
     })), st.level);
     var pCount = present(function (e) { return e.pos; });
-    var sPos = select('Part of speech', [['', 'All word types']].concat(POS_ORDER.filter(function (p) { return pCount[p]; }).map(function (p) {
-      return [p, POS_LABEL[p] + ' (' + pCount[p] + ')'];
+    var sPos = select('pos', T('f.pos'), [['', T('f.allPos')]].concat(POS_ORDER.filter(function (p) { return pCount[p]; }).map(function (p) {
+      return [p, posLabel(p) + ' (' + pCount[p] + ')'];
     })), st.pos);
     var sExtra = extra.map(function (f) {
       var c = present(f.get);
       var vals = Object.keys(c).sort();
-      return select(f.label, [['', 'All: ' + f.label.toLowerCase()]].concat(vals.map(function (v) { return [v, v + ' (' + c[v] + ')']; })), st.extra[f.key]);
+      return select(f.key, f.label, [['', T('f.all', { label: f.label.toLowerCase() })]].concat(vals.map(function (v) { return [v, (f.show ? f.show(v) : v) + ' (' + c[v] + ')']; })), st.extra[f.key]);
     });
 
-    function select2(label, options, value) {
-      var s = el('select', { 'aria-label': label });
+    function select2(key, label, options, value) {
+      var s = el('select', { 'aria-label': label, 'data-key': key });
       options.forEach(function (o) { s.appendChild(el('option', { value: o[0] }, esc(o[1]))); });
       s.value = value;
       s.style.flex = '0 1 auto';
       row2.appendChild(s);
       return s;
     }
-    var sGroup = select2('Group by', [['', 'No grouping'], ['theme', 'Group: theme'], ['level', 'Group: level'], ['pos', 'Group: word type']], st.group);
-    var sSort = select2('Sort', [['freq', cfg.orderLabel || 'Sort: frequency'], ['az', 'Sort: A–Z'], ['level', 'Sort: level']], st.sort);
+    var sGroup = select2('group', T('g.label'), [['', T('g.none')], ['theme', T('g.theme')], ['level', T('g.level')], ['pos', T('g.pos')]], st.group);
+    var sSort = select2('sort', T('s.label'), [['freq', cfg.orderLabel || T('s.freq')], ['az', T('s.az')], ['level', T('s.level')]], st.sort);
 
-    function button(icon, label, title) {
-      var b = el('button', { type: 'button', 'class': 'btn', title: title || label }, '<span aria-hidden="true">' + icon + '</span><span class="lbl">' + esc(label) + '</span>');
+    function button(key, icon, label, title) {
+      var b = el('button', { type: 'button', 'class': 'btn', title: title || label, 'data-key': key }, '<span aria-hidden="true">' + icon + '</span><span class="lbl">' + esc(label) + '</span>');
       b.setAttribute('aria-label', title || label);
       row2.appendChild(b);
       return b;
     }
-    var bView = button('▤', 'Rows', 'Switch between cards and compact rows');
-    var bTest = button('🎯', 'Test me', 'Test mode: hide the English, tap a card to reveal');
+    var bView = button('view', '▤', T('b.rows'), T('b.view.t'));
+    var bTest = button('test', '🎯', T('b.test'), T('b.test.t'));
     bTest.setAttribute('aria-pressed', 'false');
-    var bShuffle = button('🔀', 'Shuffle', 'Shuffle the current list (click again to restore order)');
+    var bShuffle = button('shuffle', '🔀', T('b.shuffle'), T('b.shuffle.t'));
     bShuffle.setAttribute('aria-pressed', 'false');
-    var bReveal = button('👁', 'Reveal all', 'Reveal every card');
+    var bReveal = button('reveal', '👁', T('b.reveal'), T('b.reveal.t'));
     bReveal.style.display = 'none';
-    var bAnki = button('⬇', 'Export for Anki', 'Download the filtered list as a tab-separated file for Anki');
+    var bAnki = button('anki', '⬇', T('b.anki'), T('b.anki.t'));
     row2.appendChild(themeButton());
     var count = el('span', { 'class': 'count', 'aria-live': 'polite' });
     row2.appendChild(count);
@@ -307,8 +314,12 @@
     var listWrap = el('div', { 'class': 'list' });
     var grid = el('div', { 'class': 'grid' });
     var sentinel = el('div', { 'class': 'sentinel', 'aria-hidden': 'true' });
-    var more = el('button', { type: 'button', 'class': 'btn load-more' }, 'Show more');
+    var more = el('button', { type: 'button', 'class': 'btn load-more' }, esc(T('more')));
     listWrap.appendChild(grid); listWrap.appendChild(sentinel); listWrap.appendChild(more);
+    if (I.isFallback(listId)) {
+      mount.classList.add('lang-fallback');
+      mount.appendChild(el('p', { 'class': 'fallback-note' }, esc(T('fallback.banner', { lang: I.info ? I.info.label.toLowerCase() : '' }))));
+    }
     mount.appendChild(controls);
     mount.appendChild(listWrap);
 
@@ -345,7 +356,7 @@
         view.forEach(function (e) { var k = keyOf(e); (buckets[k] = buckets[k] || []).push(e); });
         orderList.concat(Object.keys(buckets).filter(function (k) { return orderList.indexOf(k) < 0; })).forEach(function (k) {
           if (!buckets[k]) return;
-          var label = st.group === 'theme' ? (themes[k] ? themes[k].icon + ' ' + themes[k].en : k) : (st.group === 'pos' ? POS_LABEL[k] || k : k);
+          var label = st.group === 'theme' ? (themes[k] ? themes[k].icon + ' ' + themeLabel(k, themes[k]) : k) : (st.group === 'pos' ? posLabel(k) : levelLabel(k));
           stream.push({ head: label, n: buckets[k].length });
           buckets[k].forEach(function (e) { stream.push({ e: e }); });
         });
@@ -369,11 +380,11 @@
       compute();
       grid.innerHTML = '';
       rendered = 0;
-      if (!view.length) grid.appendChild(el('p', { 'class': 'empty' }, 'No words match. Clear the search or filters.'));
+      if (!view.length) grid.appendChild(el('p', { 'class': 'empty' }, esc(T('empty'))));
       renderMore(false);
-      count.textContent = view.length + ' of ' + data.length + ' words';
+      count.textContent = T('count.of', { n: view.length, total: data.length });
       mount.classList.toggle('view-rows', st.view === 'rows');
-      bView.querySelector('.lbl').textContent = st.view === 'rows' ? 'Cards' : 'Rows';
+      bView.querySelector('.lbl').textContent = st.view === 'rows' ? T('b.cards') : T('b.rows');
       setTimeout(maybeMore, 16);
       save(STATE_KEY, { q: st.q, theme: st.theme, level: st.level, pos: st.pos, group: st.group, sort: st.sort, view: st.view, extra: st.extra });
     }
@@ -453,8 +464,8 @@
       var tag = ready ? 'a' : 'div';
       var c = el(tag, ready ? { 'class': 'hub-card', href: l.href } : { 'class': 'hub-card coming', 'aria-disabled': 'true' });
       c.innerHTML = '<span class="big" aria-hidden="true">' + esc(l.icon || '📘') + '</span>' +
-        '<span class="status ' + (ready ? 'ready' : '') + '">' + (ready ? esc((l.count || '') + ' ' + (l.count_label || 'words').replace(l.count === 1 ? /s$/ : /$^/, '')) : 'coming') + '</span>' +
-        '<h2>' + esc(l.letter ? l.letter + ' · ' + l.title : l.title) + '</h2><p>' + esc(l.description || '') + '</p>';
+        '<span class="status ' + (ready ? 'ready' : '') + '">' + esc(ready ? T('count.' + (l.count_label || 'words') + (l.count === 1 ? '.one' : ''), { n: l.count || '' }) : T('hub.coming')) + '</span>' +
+        '<h2>' + esc((l.letter ? l.letter + ' · ' : '') + T('list.' + l.id + '.title', null, l.title)) + '</h2><p>' + esc(T('list.' + l.id + '.desc', null, l.description || '')) + '</p>';
       mount.appendChild(c);
     });
     var tb = document.getElementById('theme-toggle-slot');

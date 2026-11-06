@@ -7,6 +7,8 @@
 <meta name="description" content="The 1,000 most frequent German words with gender colours, plurals, CEFR levels, themes, usage notes and example sentences. Swiss spelling.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%87%A9%F0%9F%87%AA%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/vocab.css">
+<script src="data/ui.js"></script>
+<script src="assets/i18n.js"></script>
 <script src="assets/vocab.js"></script>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
@@ -19,25 +21,23 @@
 <body>
 <header class="site-head">
   <div class="wrap">
-    <div class="crumbs"><a href="index.html">Deutsch vocab</a> › List A</div>
-    <h1>A · Core 1,000 words</h1>
-    <p class="lede">The 1,000 most frequent German words, ranked by corpus frequency. Learn them first: together they cover most of everyday and business text. Swiss spelling (ss, never the Eszett).</p>
-    <div class="legend" aria-label="Legend">
-      <span class="chip der">der</span> masculine
-      <span class="chip die">die</span> feminine
-      <span class="chip das">das</span> neuter
-      <span class="chip pl">die</span> plural
-      <span class="level A1">A1</span><span class="level A2">A2</span><span class="level B1">B1</span><span class="level up">above B1</span><span class="level nl">not listed</span>
+    <div class="crumbs"><a href="index.html">Deutsch vocab</a> › <span data-i18n="a.crumb">List A</span></div>
+    <h1 data-i18n="a.h1">A · Core 1,000 words</h1>
+    <p class="lede" data-i18n="a.lede">The 1,000 most frequent German words, ranked by corpus frequency. Learn them first: together they cover most of everyday and business text. Swiss spelling (ss, never the Eszett).</p>
+    <div class="legend" aria-label="Legend" data-i18n-attr="aria-label:legend.aria">
+      <span class="chip der">der</span> <span data-i18n="legend.masc">masculine</span>
+      <span class="chip die">die</span> <span data-i18n="legend.fem">feminine</span>
+      <span class="chip das">das</span> <span data-i18n="legend.neut">neuter</span>
+      <span class="chip pl">die</span> <span data-i18n="legend.plural">plural</span>
+      <span class="level A1">A1</span><span class="level A2">A2</span><span class="level B1">B1</span><span class="level up" data-i18n="level.up">above B1</span><span class="level nl" data-i18n="level.nl">not listed</span>
       <span id="voice-status"></span>
     </div>
   </div>
 </header>
 <div class="wrap" id="app"></div>
-<footer class="wrap foot">
-  Frequency ranks: IDS Mannheim DeReWo lemma list (2012), cross-checked with the Leipzig Corpora Collection. Levels: Goethe-Institut word lists A1, A2, B1. Gender and plural: Wiktionary-derived german-nouns data (CC BY-SA). Translations, notes and example sentences are original. Details in <code>_data/SOURCES.md</code>.
-</footer>
+<footer class="wrap foot" data-i18n="a.foot">Frequency ranks: IDS Mannheim DeReWo lemma list (2012), cross-checked with the Leipzig Corpora Collection. Levels: Goethe-Institut word lists A1, A2, B1. Gender and plural: Wiktionary-derived german-nouns data (CC BY-SA). Translations, notes and example sentences are original. Details in <code>_data/SOURCES.md</code>.</footer>
 <script src="data/themes.js"></script>
-<script src="data/a.js"></script>
+<script>I18n.load('a')</script>
 <script>
   VocabApp.init({
     list: 'a',

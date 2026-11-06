@@ -8,6 +8,8 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%8F%AB%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/vocab.css">
 <link rel="stylesheet" href="assets/classroom.css">
+<script src="data/ui.js"></script>
+<script src="assets/i18n.js"></script>
 <script src="assets/vocab.js"></script>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
@@ -20,21 +22,19 @@
 <body>
 <header class="site-head">
   <div class="wrap">
-    <div class="crumbs"><a href="index.html">Deutsch vocab</a> › Classroom</div>
+    <div class="crumbs"><a href="index.html">Deutsch vocab</a> › <span data-i18n="list.classroom.title">Classroom</span></div>
     <div class="head-row">
       <div>
-        <h1>🏫 Classroom</h1>
-        <p class="lede">One grammar topic a week, at the level of <i>Schritte plus Neu 5</i> (B1.1). Each topic explains the logic, the rules and the exceptions, with examples in German and English and a short self-check. Swiss spelling (ss, never the Eszett).</p>
+        <h1 data-i18n="cr.h1">🏫 Classroom</h1>
+        <p class="lede" data-i18n="cr.lede">One grammar topic a week, at the level of <i>Schritte plus Neu 5</i> (B1.1). Each topic explains the logic, the rules and the exceptions, with examples in German and their translations, and a short self-check. Swiss spelling (ss, never the Eszett).</p>
       </div>
       <div id="theme-toggle-slot" class="no-print"></div>
     </div>
   </div>
 </header>
 <main class="wrap" id="app"></main>
-<footer class="wrap foot">
-  Rules checked against <a href="https://grammis.ids-mannheim.de/">grammis</a>, the online grammar of the Leibniz Institute for the German Language (IDS Mannheim). Each topic lists the pages it used. Explanations, examples and translations are original.
-</footer>
-<script src="data/classroom.js"></script>
+<footer class="wrap foot" data-i18n="cr.foot">Rules checked against <a href="https://grammis.ids-mannheim.de/">grammis</a>, the online grammar of the Leibniz Institute for the German Language (IDS Mannheim). Each topic lists the pages it used. Explanations, examples and translations are original.</footer>
+<script>I18n.load('classroom')</script>
 <script src="assets/classroom.js"></script>
 <script>
   if ('serviceWorker' in navigator) {

@@ -1,9 +1,11 @@
 /* Lernwortschatz extras. Loaded after assets/vocab.js; no dependencies, works from file://.
-   Data: data/lws.js (word entries in the shared list schema) and data/lws_meta.js (batches and tips),
-   built by _build/build_lws.py from _build/content_lws/*.json (schema in _build/README.md).
+   Data: data/lws[.<lang>].js (word entries in the shared list schema) and data/lws_meta[.<lang>].js (batches and
+   tips), built by _build/build_lws.py and _build/i18n.py from _build/content_lws/*.json (schema in _build/README.md).
    - Decorates the cards that vocab.js renders: the headword as the book prints it, section and exercise
-     reference, "also in A/B/C" links, word-field tag, and a badge when the example is not from the book.
+     reference, "also in A/B/C" links, word-field tag, a badge when the example is not from the book, and ⚠ when
+     the word translation in this language is not yet confirmed by the German Wiktionary (e.dict).
    - Renders the batches' tips (small tasks from the book) above the list, answers hidden until asked.
+   - Filter values are language-neutral (lesson number, batch number); show() turns them into labels.
    Notes and tips allow *italic* for German words.
 */
 (function () {
@@ -11,6 +13,8 @@
 
   var META = [];
   var LIST_PAGE = { a: 'a-core-1000.html', b: 'b-verbs.html', c: 'c-business-tech.html' };
+  var I = window.I18n || { t: function (k, v, f) { return f != null ? f : k; } };
+  function T(k, v, f) { return I.t(k, v, f); }
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -18,23 +22,29 @@
     });
   }
   function md(s) { return esc(s).replace(/\*(.+?)\*/g, '<em>$1</em>'); }
-  function short(iso) {
-    var d = new Date(iso + 'T12:00:00');
-    return isNaN(d) ? iso : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-  }
-  function batchOf(e) { return (window.VOCAB_LWS_META || META).filter(function (b) { return b.batch === e.batch; })[0] || {}; }
-  function lessonLabel(e) { var b = batchOf(e); return 'Lektion ' + e.lesson + (b.lesson_title ? ' · ' + b.lesson_title : ''); }
-  function batchLabel(e) { return 'Batch ' + e.batch + ' · ' + short(e.added); }
+  function meta() { return window.VOCAB_LWS_META || META; }
+  function short(iso) { return I.date ? I.date(iso, { day: 'numeric', month: 'short', year: 'numeric' }) : iso; }
 
-  function tips(meta, box) {
+  function lessonValue(e) { return String(e.lesson); }
+  function lessonShow(v) {
+    var b = meta().filter(function (x) { return String(x.lesson) === v; })[0] || {};
+    return 'Lektion ' + v + (b.lesson_title ? ' · ' + b.lesson_title : '');
+  }
+  function batchValue(e) { return String(e.batch); }
+  function batchShow(v) {
+    var b = meta().filter(function (x) { return String(x.batch) === v; })[0] || {};
+    return T('lws.batch', { n: v, d: b.added ? short(b.added) : '' });
+  }
+
+  function tips(list, box) {
     if (!box) return;
-    var list = meta.slice().sort(function (a, b) { return b.batch - a.batch; }).filter(function (b) { return b.tips && b.tips.length; });
+    list = list.slice().sort(function (a, b) { return b.batch - a.batch; }).filter(function (b) { return b.tips && b.tips.length; });
     box.innerHTML = list.map(function (b) {
-      return b.tips.map(function (t, i) {
-        return '<details class="lws-tip"><summary>💡 Tipp · Lektion ' + esc(b.lesson) + ': <span lang="de">' + md(t.text) + '</span></summary>' +
+      return b.tips.map(function (t) {
+        return '<details class="lws-tip"><summary>💡 ' + esc(T('lws.tip')) + ' · Lektion ' + esc(b.lesson) + ': <span lang="de">' + md(t.text) + '</span></summary>' +
           '<p class="lws-tip-en">' + md(t.text_en) + '</p>' +
-          '<p lang="de"><span class="lws-tag">Example</span> ' + md(t.example) + '</p>' +
-          '<button type="button" class="btn lws-show" data-b="' + b.batch + '" data-i="' + i + '" aria-expanded="false">Show answer</button>' +
+          '<p lang="de"><span class="lws-tag">' + esc(T('lws.example')) + '</span> ' + md(t.example) + '</p>' +
+          '<button type="button" class="btn lws-show" aria-expanded="false">' + esc(T('lws.showAnswer')) + '</button>' +
           '<div class="lws-answer" hidden><p lang="de">' + t.answer.map(esc).join(', ') + ' …</p>' +
           (t.note ? '<p class="lws-tip-note">' + md(t.note) + '</p>' : '') + '</div></details>';
       }).join('');
@@ -44,13 +54,13 @@
       if (!b) return;
       var a = b.nextElementSibling;
       a.hidden = !a.hidden;
-      b.textContent = a.hidden ? 'Show answer' : 'Hide answer';
+      b.textContent = a.hidden ? T('lws.showAnswer') : T('lws.hideAnswer');
       b.setAttribute('aria-expanded', String(!a.hidden));
     });
   }
 
-  function start(data, meta, mount, tipBox) {
-    META = meta || [];
+  function start(data, metaList, mount, tipBox) {
+    META = metaList || [];
     var byId = {};
     data.forEach(function (e) { byId[e.id] = e; });
     tips(META, tipBox);
@@ -60,26 +70,36 @@
       var e = byId[card.id];
       if (!e) return;
       card.setAttribute('data-lws', '1');
-      var meta = card.querySelector('.meta');
-      if (meta) {
-        var html = '<span class="tag lws-sec" title="Section in the book">' + esc(e.ref ? e.ref + ' · ' : '') + esc(e.section) + '</span>' +
-          (e.group ? '<span class="tag lws-group" title="Word field in the book">' + esc(e.group) + '</span>' : '') +
+      var m = card.querySelector('.meta');
+      if (m) {
+        var html = '<span class="tag lws-sec" title="' + esc(T('lws.sec.t')) + '">' + esc(e.ref ? e.ref + ' · ' : '') + esc(e.section) + '</span>' +
+          (e.group ? '<span class="tag lws-group" title="' + esc(T('lws.group.t')) + '">' + esc(e.group) + '</span>' : '') +
           (e.also_in || []).map(function (x) {
-            return '<a class="tag lws-also" href="' + LIST_PAGE[x.list] + '#q=' + encodeURIComponent(e.lemma) + '" title="Also in list ' + x.list.toUpperCase() + '">also in ' + x.list.toUpperCase() + '</a>';
+            var L = x.list.toUpperCase();
+            return '<a class="tag lws-also" href="' + LIST_PAGE[x.list] + '#q=' + encodeURIComponent(e.lemma) + '" title="' + esc(T('lws.also.t', { L: L })) + '">' + esc(T('lws.also', { L: L })) + '</a>';
           }).join('');
         var frag = document.createElement('span');
         frag.innerHTML = html;
-        var rank = meta.querySelector('.rank');
-        while (frag.firstChild) meta.insertBefore(frag.firstChild, rank);
+        var rank = m.querySelector('.rank');
+        while (frag.firstChild) m.insertBefore(frag.firstChild, rank);
       }
       var head = card.querySelector('.headword');
       if (head && e.book) {
         var p = document.createElement('div');
         p.className = 'lws-book';
         p.setAttribute('lang', 'de');
-        p.title = 'As printed in the book';
+        p.title = T('lws.book.t');
         p.innerHTML = '📖 ' + esc(e.book);
         head.parentNode.insertBefore(p, head.nextSibling);
+      }
+      var en = card.querySelector('.en');
+      if (en && e.dict && e.dict !== 'ok') {
+        var w = document.createElement('span');
+        w.className = 'lws-dict';
+        w.title = T('dict.flag');
+        w.setAttribute('aria-label', T('dict.flag'));
+        w.textContent = '⚠';
+        en.insertBefore(w, en.firstChild);
       }
       var note = card.querySelector('.note > span');
       if (note && e.note) note.innerHTML = md(e.note);
@@ -87,7 +107,7 @@
       if (ex && e.own_example) {
         var badge = document.createElement('span');
         badge.className = 'lws-own';
-        badge.textContent = 'our example, not from the book';
+        badge.textContent = T('lws.own');
         ex.appendChild(badge);
       }
     }
@@ -98,5 +118,5 @@
     if (window.MutationObserver) new MutationObserver(scan).observe(mount, { childList: true, subtree: true });
   }
 
-  window.VocabLWS = { start: start, lessonLabel: lessonLabel, batchLabel: batchLabel };
+  window.VocabLWS = { start: start, lessonValue: lessonValue, lessonShow: lessonShow, batchValue: batchValue, batchShow: batchShow };
 })();

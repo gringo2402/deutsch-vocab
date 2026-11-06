@@ -8,6 +8,8 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%87%A9%F0%9F%87%AA%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/vocab.css">
 <link rel="stylesheet" href="assets/b.css">
+<script src="data/ui.js"></script>
+<script src="assets/i18n.js"></script>
 <script src="assets/vocab.js"></script>
 <script src="assets/b.js"></script>
 <link rel="manifest" href="manifest.webmanifest">
@@ -21,34 +23,34 @@
 <body>
 <header class="site-head">
   <div class="wrap">
-    <div class="crumbs"><a href="index.html">Deutsch vocab</a> › List B</div>
-    <h1>B · Verbs: 200 core + 300 business &amp; tech</h1>
-    <p class="lede">The 200 most frequent German verbs (corpus rank) and 300 verbs that are typical of business and IT texts. Each card shows the principal parts you need to build every tense: <b>er-form · Präteritum · Perfekt</b>. Tap the strip for six full tables. Swiss spelling (ss, never the Eszett).</p>
-    <div class="legend" aria-label="Legend">
-      <span class="chip aux-haben">hat</span> Perfekt with haben
-      <span class="chip aux-sein">ist</span> Perfekt with sein
-      <span class="chip aux-both">hat/ist</span> both
-      <span><span class="pfx">um</span>setzen</span> separable prefix
-      <span><span class="ipfx">ver</span>kaufen</span> inseparable prefix
-      <span class="level A1">A1</span><span class="level A2">A2</span><span class="level B1">B1</span><span class="level up">above B1</span>
+    <div class="crumbs"><a href="index.html">Deutsch vocab</a> › <span data-i18n="b.crumb">List B</span></div>
+    <h1 data-i18n="b.h1">B · Verbs: 200 core + 300 business &amp; tech</h1>
+    <p class="lede" data-i18n="b.lede">The 200 most frequent German verbs (corpus rank) and 300 verbs that are typical of business and IT texts. Each card shows the principal parts you need to build every tense: <b>er-form · Präteritum · Perfekt</b>. Tap the strip for six full tables. Swiss spelling (ss, never the Eszett).</p>
+    <div class="legend" aria-label="Legend" data-i18n-attr="aria-label:legend.aria">
+      <span class="chip aux-haben">hat</span> <span data-i18n="b.legend.haben">Perfekt with haben</span>
+      <span class="chip aux-sein">ist</span> <span data-i18n="b.legend.sein">Perfekt with sein</span>
+      <span class="chip aux-both">hat/ist</span> <span data-i18n="b.legend.both">both</span>
+      <span><span class="pfx">um</span>setzen</span> <span data-i18n="b.legend.sep">separable prefix</span>
+      <span><span class="ipfx">ver</span>kaufen</span> <span data-i18n="b.legend.insep">inseparable prefix</span>
+      <span class="level A1">A1</span><span class="level A2">A2</span><span class="level B1">B1</span><span class="level up" data-i18n="level.up">above B1</span>
       <span id="voice-status"></span>
     </div>
-    <div class="section-switch no-print" id="section-switch" aria-label="Section"></div>
+    <div class="section-switch no-print" id="section-switch" aria-label="Section" data-i18n-attr="aria-label:b.sec.aria"></div>
   </div>
 </header>
 <div class="wrap" id="app"></div>
-<footer class="wrap foot">
-  Core 200: IDS Mannheim DeReWo lemma list (2012) with verb tags from the DeReKo-2014 STT word list (CC BY-NC 3.0). Business &amp; tech 300: keyness in a corpus of 440 German Wikipedia articles on business and IT (CC BY-SA 4.0) against the Leipzig Corpora Collection. Forms: Wiktionary via kaikki.org (CC BY-SA). Levels: Goethe-Institut word lists A1, A2, B1. Translations, notes and example sentences are original. Details in <code>_data/SOURCES.md</code>.
-</footer>
+<footer class="wrap foot" data-i18n="b.foot">Core 200: IDS Mannheim DeReWo lemma list (2012) with verb tags from the DeReKo-2014 STT word list (CC BY-NC 3.0). Business &amp; tech 300: keyness in a corpus of 440 German Wikipedia articles on business and IT (CC BY-SA 4.0) against the Leipzig Corpora Collection. Forms: Wiktionary via kaikki.org (CC BY-SA). Levels: Goethe-Institut word lists A1, A2, B1. Translations, notes and example sentences are original. Details in <code>_data/SOURCES.md</code>.</footer>
 <script src="data/themes.js"></script>
-<script src="data/b.js"></script>
+<script>I18n.load('b')</script>
 <script>
   (function () {
+    var T = I18n.t;
+    function show(map) { return function (v) { return map[v] ? T(map[v]) : v; }; }
     var filters = [
-      { key: 'section', label: 'Section', get: function (e) { return e.section; } },
-      { key: 'auxiliary', label: 'Perfekt with', get: function (e) { return e.auxiliary; } },
-      { key: 'separable', label: 'Prefix', get: function (e) { return e.prefix_type === 'none' ? 'no prefix' : e.prefix_type; } },
-      { key: 'reflexive', label: 'Reflexive', get: function (e) { return e.reflexive ? 'sich-verb' : 'not reflexive'; } }
+      { key: 'section', label: T('b.f.section'), get: function (e) { return e.section; }, show: show({ 'Core 200': 'b.v.core', 'Business & tech 300': 'b.v.biz' }) },
+      { key: 'auxiliary', label: T('b.f.aux'), get: function (e) { return e.auxiliary; } },
+      { key: 'separable', label: T('b.f.prefix'), get: function (e) { return e.prefix_type === 'none' ? 'no prefix' : e.prefix_type; }, show: show({ 'no prefix': 'b.v.noPrefix', separable: 'b.v.separable', inseparable: 'b.v.inseparable' }) },
+      { key: 'reflexive', label: T('b.f.refl'), get: function (e) { return e.reflexive ? 'sich-verb' : 'not reflexive'; }, show: show({ 'sich-verb': 'b.v.sich', 'not reflexive': 'b.v.notRefl' }) }
     ];
     var mount = document.getElementById('app');
     var app = VocabApp.init({

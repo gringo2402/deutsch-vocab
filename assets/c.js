@@ -32,7 +32,14 @@
   function fold(s) {
     return String(s || '').toLowerCase().replace(ESZETT, 'ss').normalize('NFD').replace(/[̀-ͯ]/g, '');
   }
+  var I = window.I18n || { t: function (k, v, f) { return f != null ? f : k; } };
+  function T(k, v, f) { return I.t(k, v, f); }
+  // label() is the filter value (English, the same in every language); show() is what the menu displays.
   function label(id) { return TOPICS[id] ? TOPICS[id].en : id; }
+  function show(en) {
+    for (var id in TOPICS) if (TOPICS[id].en === en) return T('ctopic.' + id, null, en);
+    return en;
+  }
 
   function start(data, mount) {
     var byId = {};
@@ -60,11 +67,10 @@
       if (meta) {
         var rank = meta.querySelector('.rank');
         var n = dots(e.keyness);
-        var tip = 'How typical of work texts: ' + n + ' of 5 (keyness ' + e.keyness + '; ' + e.domain_pm +
-          ' per million words in business/IT Wikipedia vs ' + e.general_pm + ' in general German)';
-        var html = '<span class="tag c-topic" title="Topic">' + t.icon + ' ' + esc(t.en) + '</span>' +
-          (e.phrase ? '<span class="tag c-phrase">set phrase</span>' : '') +
-          (e.also_in_a ? '<span class="tag c-in-a" title="Also in list A (core 1,000)">also in A</span>' : '') +
+        var tip = T('c.key.t', { n: n, k: e.keyness, d: e.domain_pm, g: e.general_pm });
+        var html = '<span class="tag c-topic" title="' + esc(T('c.topic.t')) + '">' + t.icon + ' ' + esc(T('ctopic.' + e.topic, null, t.en)) + '</span>' +
+          (e.phrase ? '<span class="tag c-phrase">' + esc(T('c.phrase')) + '</span>' : '') +
+          (e.also_in_a ? '<span class="tag c-in-a" title="' + esc(T('c.inA.t')) + '">' + esc(T('c.inA')) + '</span>' : '') +
           '<span class="c-key" title="' + esc(tip) + '" aria-label="' + esc(tip) + '">' +
           '<span class="on">' + new Array(n + 1).join('●') + '</span>' + new Array(6 - n).join('○') + '</span>';
         var frag = document.createElement('span');
@@ -76,14 +82,14 @@
         var p = document.createElement('div');
         p.className = 'c-parts';
         p.setAttribute('lang', 'de');
-        p.title = 'Built from these parts';
+        p.title = T('c.parts.t');
         p.innerHTML = '🧩 ' + e.parts.split('·').map(function (x) { return '<span>' + esc(x) + '</span>'; }).join('<i>·</i>');
         head.parentNode.insertBefore(p, head.nextSibling);
       }
       if (e.collocations && e.collocations.length) {
         var c = document.createElement('div');
         c.className = 'c-coll';
-        c.innerHTML = '<div class="c-coll-h">Use it with</div><ul>' + e.collocations.map(function (x) {
+        c.innerHTML = '<div class="c-coll-h">' + esc(T('c.coll')) + '</div><ul>' + e.collocations.map(function (x) {
           return '<li><span class="de" lang="de">' + esc(x.de) + '</span>' +
             '<span class="hideable"><span>' + esc(x.en) + '</span></span></li>';
         }).join('') + '</ul>';
@@ -101,5 +107,5 @@
     }
   }
 
-  window.VocabC = { topics: TOPICS, label: label, start: start };
+  window.VocabC = { topics: TOPICS, label: label, show: show, start: start };
 })();

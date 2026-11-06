@@ -13,6 +13,8 @@
   var app = document.getElementById('app');
   var Speech = window.VocabApp ? window.VocabApp.speech : null;
   var GAP = /___/g;
+  var I = window.I18n || { t: function (k, v, f) { return f != null ? f : k; } };
+  function T(k, v, f) { return I.t(k, v, f); }
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -24,12 +26,13 @@
   }
   function plain(s) { return String(s || '').replace(/\*+/g, ''); }
   function date(iso) {
+    if (I.date) return I.date(iso);
     var d = new Date(iso + 'T12:00:00');
     return isNaN(d) ? iso : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
   }
   function sayBtn(text) {
     if (!Speech || !Speech.ok) return '';
-    return '<button type="button" class="say" data-say="' + esc(plain(text)) + '" aria-label="Read aloud" title="Read aloud">🔊</button>';
+    return '<button type="button" class="say" data-say="' + esc(plain(text)) + '" aria-label="' + esc(T('say')) + '" title="' + esc(T('say')) + '">🔊</button>';
   }
   function norm(s) {
     return String(s || '').toLowerCase()
@@ -58,12 +61,12 @@
       var longest = Math.max.apply(null, it.gaps[i].map(function (a) { return a.length; }));
       var w = Math.min(Math.max(longest + 2, 6), 44);
       return '<input type="text" class="ha-gap" data-gap="' + i + '" style="width:' + w + 'ch" autocomplete="off" autocapitalize="off" spellcheck="false"' +
-        ' aria-label="Gap ' + (i + 1) + ' in item ' + esc(it.label) + '" value="' + esc((saved[key] || [])[i] || '') + '">';
+        ' aria-label="' + esc(T('ha.gap.aria', { i: i + 1, label: it.label })) + '" value="' + esc((saved[key] || [])[i] || '') + '">';
     });
   }
   function exampleBlock(ex) {
     if (!ex || !ex.length) return '';
-    return '<div class="ha-example"><span class="ha-tag">Example (from the book)</span>' + ex.map(function (l) {
+    return '<div class="ha-example"><span class="ha-tag">' + esc(T('ha.example')) + '</span>' + ex.map(function (l) {
       return '<div class="ha-line">' + (l.label ? '<span class="ha-label">' + esc(l.label) + '</span>' : '') + '<div>' +
         (l.lead ? '<div class="ha-lead">' + md(l.lead) + '</div>' : '') + '<div>' + md(l.text) + '</div></div></div>';
     }).join('') + '</div>';
@@ -71,8 +74,8 @@
   function boxBlock(e) {
     if (!e.box) return '';
     var used = e.box_used || [];
-    return '<div class="ha-box" aria-label="Word box">' + e.box.map(function (w, i) {
-      return used.indexOf(i) >= 0 ? '<s class="ha-chip used" title="Used in the example">' + esc(w) + '</s>' : '<span class="ha-chip">' + esc(w) + '</span>';
+    return '<div class="ha-box" aria-label="' + esc(T('ha.box.aria')) + '">' + e.box.map(function (w, i) {
+      return used.indexOf(i) >= 0 ? '<s class="ha-chip used" title="' + esc(T('ha.used.t')) + '">' + esc(w) + '</s>' : '<span class="ha-chip">' + esc(w) + '</span>';
     }).join('') + '</div>';
   }
   function phrasesBlock(e) {
@@ -83,18 +86,18 @@
     var body;
     if (it.gaps) body = '<div class="ha-text">' + gapText(it.text, key, it, saved) + '</div>';
     else body = (it.text ? '<div class="ha-text">' + md(it.text) + '</div>' : '') +
-      '<textarea class="ha-write" rows="' + (it.open ? 4 : 2) + '" data-gap="0" autocapitalize="sentences" spellcheck="false" aria-label="Your answer to item ' + esc(it.label) + '" placeholder="' +
-      (it.open ? 'Write your excuse …' : 'Write the sentence …') + '">' + esc((saved[key] || [])[0] || '') + '</textarea>';
+      '<textarea class="ha-write" rows="' + (it.open ? 4 : 2) + '" data-gap="0" autocapitalize="sentences" spellcheck="false" aria-label="' + esc(T('ha.answer.aria', { label: it.label })) + '" placeholder="' +
+      esc(it.open ? T('ha.ph.open') : T('ha.ph.write')) + '">' + esc((saved[key] || [])[0] || '') + '</textarea>';
     return '<li class="ha-item" data-key="' + key + '">' +
       '<span class="ha-label">' + esc(it.label) + '</span><div class="ha-body">' +
       (it.lead ? '<div class="ha-lead">' + md(it.lead) + '</div>' : '') + body +
-      '<button type="button" class="btn ha-reveal no-print" aria-expanded="false">Show solution</button>' +
+      '<button type="button" class="btn ha-reveal no-print" aria-expanded="false">' + esc(T('ha.show')) + '</button>' +
       '<div class="ha-solution" hidden></div></div></li>';
   }
   function solutionHtml(set, it, values) {
     var verdict = '';
     if (it.open) {
-      verdict = '<div class="ha-verdict">Model answer: yours can be completely different.</div>';
+      verdict = '<div class="ha-verdict">' + esc(T('ha.model')) + '</div>';
     } else {
       var typed = values.some(function (v) { return v.trim(); });
       var ok;
@@ -105,8 +108,8 @@
       } else {
         ok = (it.accept || []).concat([plain(it.solution)]).some(function (a) { return norm(a) === norm(values[0]); });
       }
-      if (ok) verdict = '<div class="ha-verdict ok">✓ Correct.</div>';
-      else if (typed) verdict = '<div class="ha-verdict compare">Compare with the solution. Other correct German counts too.</div>';
+      if (ok) verdict = '<div class="ha-verdict ok">' + esc(T('ha.correct')) + '</div>';
+      else if (typed) verdict = '<div class="ha-verdict compare">' + esc(T('ha.compare')) + '</div>';
     }
     var src = (set.sources || []).filter(function (s) { return s.id === it.source; })[0];
     return verdict +
@@ -114,32 +117,32 @@
       '<div class="ha-sol-en">' + md(it.en) + '</div>' +
       '<div class="ha-why">' + md(it.why) + '</div>' +
       (it.check ? '<div class="ha-check">⚠ ' + md(it.check) + '</div>' : '') +
-      (src ? '<div class="ha-cite">Rule: <a href="' + esc(src.url) + '" rel="noopener" target="_blank">' + esc(src.title) + '</a></div>' : '');
+      (src ? '<div class="ha-cite">' + esc(T('ha.rule')) + ' <a href="' + esc(src.url) + '" rel="noopener" target="_blank">' + esc(src.title) + '</a></div>' : '');
   }
 
   /* ---------- views ---------- */
   function listView() {
-    document.title = 'Hausaufgaben · German homework';
-    if (!SETS.length) { app.innerHTML = '<p>No homework sets yet.</p>'; return; }
+    document.title = T('ha.doc');
+    if (!SETS.length) { app.innerHTML = '<p>' + esc(T('ha.none')) + '</p>'; return; }
     app.innerHTML = '<div class="hub ha-list">' + SETS.map(function (s) {
       return '<a class="hub-card" href="#' + esc(s.id) + '">' +
-        '<span class="status ready">Set ' + s.no + ' · ' + itemCount(s) + ' items</span>' +
+        '<span class="status ready">' + esc(T('ha.set', { n: s.no }) + ' · ' + T('ha.items', { n: itemCount(s) })) + '</span>' +
         '<h2>' + md(s.title) + '</h2><p class="ha-en">' + md(s.title_en) + '</p>' +
         '<p>' + esc(s.book) + ' · ' + s.pages.map(function (p) { return esc(p.page); }).join(', ') + '</p>' +
-        '<p class="ha-date">Added ' + esc(date(s.added)) + '</p></a>';
+        '<p class="ha-date">' + esc(T('ha.added', { d: date(s.added) })) + '</p></a>';
     }).join('') + '</div>';
   }
 
   function setView(set) {
-    document.title = set.title + ' · Hausaufgaben';
+    document.title = set.title + ' · ' + T('list.hausaufgaben.title');
     var saved = load(set);
     var total = itemCount(set);
-    var h = '<p class="crumbs ha-back"><a href="#">← All sets</a></p>' +
-      '<div class="ha-head"><span class="status ready">Set ' + set.no + ' · added ' + esc(date(set.added)) + '</span>' +
+    var h = '<p class="crumbs ha-back"><a href="#">' + esc(T('ha.back')) + '</a></p>' +
+      '<div class="ha-head"><span class="status ready">' + esc(T('ha.set', { n: set.no }) + ' · ' + T('ha.addedLower', { d: date(set.added) })) + '</span>' +
       '<h2 class="ha-title">' + md(set.title) + '</h2><p class="ha-en">' + md(set.title_en) + '</p>' +
       '<p class="ha-en">' + esc(set.book) + '</p>' +
-      '<div class="ha-tools no-print"><button type="button" class="btn ha-all" aria-pressed="false">Show all solutions</button>' +
-      '<button type="button" class="btn ha-clear">Clear my answers</button><span class="ha-progress" aria-live="polite"></span></div></div>';
+      '<div class="ha-tools no-print"><button type="button" class="btn ha-all" aria-pressed="false">' + esc(T('ha.showAll')) + '</button>' +
+      '<button type="button" class="btn ha-clear">' + esc(T('ha.clear')) + '</button><span class="ha-progress" aria-live="polite"></span></div></div>';
     set.pages.forEach(function (p, pi) {
       h += '<section class="ha-page"><h2><span class="ha-pageno">' + esc(p.page) + '</span> ' + md(p.heading) + '</h2>' +
         (p.heading_en ? '<p class="ha-en">' + md(p.heading_en) + '</p>' : '');
@@ -147,7 +150,7 @@
         h += '<article class="ha-ex">';
         if (e.instruction) {
           h += '<h3>' + (e.marker ? '<span class="ha-marker">' + esc(e.marker) + '</span>' : '') +
-            (e.tag ? '<span class="ha-ref" title="Section or exercise reference printed in the book">' + esc(e.tag) + '</span>' : '') +
+            (e.tag ? '<span class="ha-ref" title="' + esc(T('ha.ref.t')) + '">' + esc(e.tag) + '</span>' : '') +
             '<span class="ha-no">' + esc(e.no) + '</span> <span>' + md(e.instruction) + '</span></h3>' +
             '<p class="ha-en">' + md(e.instruction_en) + '</p>';
         }
@@ -160,7 +163,7 @@
       });
       h += '</section>';
     });
-    h += '<section class="ha-page"><h2>Sources</h2><ul>' + set.sources.map(function (s) {
+    h += '<section class="ha-page"><h2>' + esc(T('ha.sources')) + '</h2><ul>' + set.sources.map(function (s) {
       return '<li><a href="' + esc(s.url) + '" rel="noopener" target="_blank">' + esc(s.title) + '</a></li>';
     }).join('') + '</ul></section>';
     app.innerHTML = h;
@@ -174,10 +177,10 @@
     }
     function progress() {
       var shown = app.querySelectorAll('.ha-reveal[aria-expanded="true"]').length;
-      app.querySelector('.ha-progress').textContent = shown ? 'Solutions shown: ' + shown + ' of ' + total : '';
+      app.querySelector('.ha-progress').textContent = shown ? T('ha.progress', { n: shown, total: total }) : '';
       var all = app.querySelector('.ha-all');
       var on = shown === total;
-      all.textContent = on ? 'Hide all solutions' : 'Show all solutions';
+      all.textContent = on ? T('ha.hideAll') : T('ha.showAll');
       all.setAttribute('aria-pressed', on ? 'true' : 'false');
     }
     function reveal(li, show) {
@@ -193,7 +196,7 @@
       });
       if (show) sol.innerHTML = solutionHtml(set, it, vals);
       sol.hidden = !show;
-      btn.textContent = show ? 'Hide solution' : 'Show solution';
+      btn.textContent = show ? T('ha.hide') : T('ha.show');
       btn.setAttribute('aria-expanded', show ? 'true' : 'false');
     }
 
@@ -216,7 +219,7 @@
       progress();
     });
     app.querySelector('.ha-clear').addEventListener('click', function () {
-      if (!window.confirm('Clear all your answers in this set?')) return;
+      if (!window.confirm(T('ha.clear.confirm'))) return;
       saved = {};
       save(set, saved);
       app.querySelectorAll('[data-gap]').forEach(function (el) { el.value = ''; });
