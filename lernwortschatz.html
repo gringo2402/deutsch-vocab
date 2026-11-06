@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lernwortschatz · course book word list</title>
+<meta name="description" content="The course book's word list, lesson by lesson: every word with article, plural or verb forms, the book's example sentence and English translations. Swiss spelling.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%93%92%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/vocab.css">
+<link rel="stylesheet" href="assets/lws.css">
+<script src="assets/vocab.js"></script>
+<script src="assets/lws.js"></script>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1115" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Deutsch">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+</head>
+<body class="list-lws">
+<header class="site-head">
+  <div class="wrap">
+    <div class="crumbs"><a href="index.html">Deutsch vocab</a> › Lernwortschatz</div>
+    <h1>📒 Lernwortschatz</h1>
+    <p class="lede">The word list from <i>Schritte plus Neu 5</i>, lesson by lesson. Each card shows the word as the book prints it, its example sentence and English translations, in the sense the sentence uses. Pick a lesson or batch to study only the new words. Swiss spelling (ss, never the Eszett).</p>
+    <div class="legend" aria-label="Legend">
+      <span class="chip der">der</span> masculine
+      <span class="chip die">die</span> feminine
+      <span class="chip das">das</span> neuter
+      <span class="chip pl">die</span> plural
+      <span class="level A1">A1</span><span class="level A2">A2</span><span class="level B1">B1</span><span class="level up">above B1</span><span class="level nl">not listed</span>
+      <span id="voice-status"></span>
+    </div>
+    <div id="lws-tips"></div>
+  </div>
+</header>
+<div class="wrap" id="app"></div>
+<footer class="wrap foot">
+  Words and example sentences typed from the learner's course book for private study. Translations and notes are original. Levels: Goethe-Institut word lists A1, A2, B1. Gender and plural checked against Wiktionary-derived german-nouns data (CC BY-SA).
+</footer>
+<script src="data/themes.js"></script>
+<script src="data/lws.js"></script>
+<script src="data/lws_meta.js"></script>
+<script>
+  VocabApp.init({
+    list: 'lws',
+    data: window.VOCAB_LWS,
+    themes: window.VOCAB_THEMES,
+    mount: document.getElementById('app'),
+    exportName: 'deutsch-lernwortschatz',
+    orderLabel: 'Sort: book order',
+    filters: [
+      { key: 'lesson', label: 'Lesson', get: function (e) { return VocabLWS.lessonLabel(e); } },
+      { key: 'section', label: 'Section', get: function (e) { return e.section; } },
+      { key: 'batch', label: 'Batch', get: function (e) { return VocabLWS.batchLabel(e); } }
+    ]
+  });
+  VocabLWS.start(window.VOCAB_LWS, window.VOCAB_LWS_META, document.getElementById('app'), document.getElementById('lws-tips'));
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+  }
+</script>
+</body>
+</html>

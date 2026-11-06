@@ -224,6 +224,11 @@
     var st = Object.assign({ q: '', theme: '', level: '', pos: '', group: '', sort: 'freq', view: 'cards', extra: {} },
       load(STATE_KEY, {}));
     st.testing = false; st.shuffled = null;
+    // A link like a-core-1000.html#q=Satz opens the list with that search and no other filters.
+    var hashQ = /^#q=(.+)$/.exec(location.hash);
+    if (hashQ) {
+      st.q = decodeURIComponent(hashQ[1]); st.theme = ''; st.level = ''; st.pos = ''; st.extra = {};
+    }
 
     /* controls */
     var controls = el('div', { 'class': 'controls no-print', role: 'search' });
@@ -274,7 +279,7 @@
       return s;
     }
     var sGroup = select2('Group by', [['', 'No grouping'], ['theme', 'Group: theme'], ['level', 'Group: level'], ['pos', 'Group: word type']], st.group);
-    var sSort = select2('Sort', [['freq', 'Sort: frequency'], ['az', 'Sort: A–Z'], ['level', 'Sort: level']], st.sort);
+    var sSort = select2('Sort', [['freq', cfg.orderLabel || 'Sort: frequency'], ['az', 'Sort: A–Z'], ['level', 'Sort: level']], st.sort);
 
     function button(icon, label, title) {
       var b = el('button', { type: 'button', 'class': 'btn', title: title || label }, '<span aria-hidden="true">' + icon + '</span><span class="lbl">' + esc(label) + '</span>');

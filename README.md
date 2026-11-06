@@ -11,6 +11,7 @@ German vocabulary lists for the step from **A2 to B1**, built for work in busine
 | [C · Business & tech words](https://gringo2402.github.io/deutsch-vocab/c-business-tech.html) | 300 nouns, adjectives and phrases for meetings, projects, finance and IT, Swiss usage included |
 | [🏫 Classroom](https://gringo2402.github.io/deutsch-vocab/classroom.html) | One grammar topic a week from class: the logic, rules, exceptions and common mistakes, with German examples, English translations and a short self-check |
 | [📝 Hausaufgaben](https://gringo2402.github.io/deutsch-vocab/hausaufgaben.html) | Homework exercises typed out as on the page: try each gap, then show the solution with an English translation and a one-line explanation |
+| [📒 Lernwortschatz](https://gringo2402.github.io/deutsch-vocab/lernwortschatz.html) | The course book's word list, lesson by lesson: article, plural or verb forms, the book's example sentence and English translations, with Test me and Anki export |
 
 ## Use it on a phone
 
