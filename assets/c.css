@@ -1,0 +1,21 @@
+/* List C extras: topic chip, keyness meter, compound parts, verb partners. Uses the colour tokens of vocab.css. */
+.list-c .lemma { overflow-wrap: anywhere; hyphens: manual; }
+.list-c .c-topic { color: var(--fg); background: var(--surface-2); }
+.list-c .c-phrase { border-style: dashed; }
+.list-c .c-in-a { border-color: var(--accent); color: var(--accent); }
+.list-c .c-key { color: var(--muted); letter-spacing: 1px; font-size: .7rem; white-space: nowrap; }
+.list-c .c-key .on { color: var(--accent); }
+.list-c .c-parts { font-size: .92rem; color: var(--muted); display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 2px; overflow-wrap: anywhere; }
+.list-c .c-parts span { color: var(--fg); background: var(--surface-2); border-radius: 5px; padding: 0 4px; }
+.list-c .c-parts i { font-style: normal; color: var(--accent); font-weight: 700; }
+.list-c .c-coll { font-size: .9rem; border-left: 3px solid var(--accent); padding: 2px 0 2px 8px; }
+.list-c .c-coll-h { font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.list-c .c-coll ul { margin: 2px 0 0; padding: 0; list-style: none; display: grid; gap: 3px; }
+.list-c .c-coll li { display: grid; gap: 0; }
+.list-c .c-coll .de { font-weight: 600; }
+.list-c .c-coll .hideable { color: var(--muted); font-size: .86rem; min-height: 1.2em; }
+.list-c .intro-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 8px; margin: 10px 0 4px; font-size: .9rem; }
+.list-c .intro-grid div { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; }
+.list-c .intro-grid b { display: block; }
+.view-rows.list-c .c-coll, .list-c .view-rows .c-coll { font-size: .85rem; }
+@media print { .list-c .c-key { display: none; } }

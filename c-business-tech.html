@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C · Business &amp; tech German words</title>
+<meta name="description" content="300 nouns, adjectives and set phrases for meetings, projects, finance, HR, contracts and IT, ranked by how typical they are of business and IT texts. Gender colours, plurals, CEFR levels, Swiss usage, verb partners and example sentences. Swiss spelling.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%92%BC%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/vocab.css">
+<link rel="stylesheet" href="assets/c.css">
+<script src="assets/vocab.js"></script>
+<script src="assets/c.js"></script>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1115" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Deutsch">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+</head>
+<body class="list-c">
+<header class="site-head">
+  <div class="wrap">
+    <div class="crumbs"><a href="index.html">Deutsch vocab</a> › List C</div>
+    <h1>C · Business &amp; tech: 300 words that aren't verbs</h1>
+    <p class="lede">Nouns, adjectives and set phrases you meet at work: meetings, projects, finance, HR, contracts, IT and data. Ranked by how typical they are of business and IT texts compared with everyday German, so "Sort: frequency" shows the most work-typical words first. Swiss spelling (ss, never the Eszett).</p>
+    <div class="intro-grid">
+      <div><b>●●●●○ work-typical</b>More dots = much more common in business/IT texts than in general German.</div>
+      <div><b>🧩 Daten·schutz·erklärung</b>Long compounds split into their parts. Learn the parts once, read hundreds of words.</div>
+      <div><b>Use it with</b>The verbs that go with a noun, e.g. <i lang="de">eine Frist einhalten</i>. Hidden in Test me.</div>
+      <div><b>🇨🇭 Swiss usage</b>Notes flag Swiss words such as <i lang="de">Offerte</i>, <i lang="de">Traktandum</i>, <i lang="de">Pensum</i>.</div>
+    </div>
+    <div class="legend" aria-label="Legend">
+      <span class="chip der">der</span> masculine
+      <span class="chip die">die</span> feminine
+      <span class="chip das">das</span> neuter
+      <span class="chip pl">die</span> plural
+      <span class="level A1">A1</span><span class="level A2">A2</span><span class="level B1">B1</span><span class="level up">above B1</span><span class="level nl">not listed</span>
+      <span id="voice-status"></span>
+    </div>
+  </div>
+</header>
+<div class="wrap" id="app"></div>
+<footer class="wrap foot">
+  Domain corpus: German Wikipedia articles from business and IT categories (CC BY-SA 4.0, Wikipedia contributors). General frequency: IDS Mannheim DeReWo lemma list (2012) and DeReKo word-form list (CC BY-NC 3.0); phrases: Leipzig Corpora Collection. Levels: Goethe-Institut word lists A1, A2, B1. Gender and plural: Wiktionary-derived german-nouns data (CC BY-SA). Translations, notes, verb partners and example sentences are original. Details in <code>_data/SOURCES.md</code>.
+</footer>
+<script src="data/themes.js"></script>
+<script src="data/c.js"></script>
+<script>
+  VocabApp.init({
+    list: 'c',
+    data: window.VOCAB_C,
+    themes: window.VOCAB_THEMES,
+    mount: document.getElementById('app'),
+    exportName: 'deutsch-c-business-tech',
+    filters: [
+      { key: 'topic', label: 'Topic', get: function (e) { return VocabC.label(e.topic); } },
+      { key: 'domain', label: 'Domain', get: function (e) { return e.domain; } },
+      { key: 'kind', label: 'Entry type', get: function (e) { return e.phrase ? 'set phrase' : 'single word'; } }
+    ]
+  });
+  VocabC.start(window.VOCAB_C, document.getElementById('app'));
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+  }
+</script>
+</body>
+</html>

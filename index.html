@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deutsch vocab lists</title>
+<meta name="description" content="German vocabulary lists for an A2 to B1 learner in business and technology: core words, verbs, business and tech words.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%87%A9%F0%9F%87%AA%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/vocab.css">
+<script src="assets/vocab.js"></script>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1115" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Deutsch">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap">
+    <div class="head-row">
+      <div>
+        <h1>Deutsch vocab</h1>
+        <p class="lede">Three word lists for the step from A2 to B1, built for work in business and technology. Works offline: open the files straight from this folder.</p>
+      </div>
+      <div id="theme-toggle-slot" class="no-print"></div>
+    </div>
+  </div>
+</header>
+<main class="wrap">
+  <div class="hub" id="hub"></div>
+
+  <section class="info">
+    <h2>How the colours work</h2>
+    <div class="legend">
+      <span class="chip der">der</span> masculine
+      <span class="chip die">die</span> feminine
+      <span class="chip das">das</span> neuter
+      <span class="chip pl">die</span> plural (always neutral grey)
+    </div>
+    <p>Every noun card has a coloured edge in its gender colour, so the article sticks visually. Level badges come from the Goethe-Institut lists:</p>
+    <div class="legend">
+      <span class="level A1">A1</span><span class="level A2">A2</span><span class="level B1">B1</span>
+      <span class="level up">above B1</span> content word not in the A1–B1 lists
+      <span class="level nl">not listed</span> function word or adverb the lists don't show as a headword
+    </div>
+
+    <h2>How to study with a list</h2>
+    <ul>
+      <li><b>Filter</b> by theme, level or word type, or search in German or English.</li>
+      <li><b>🎯 Test me</b> hides the English. Say the meaning, then tap the card to check. <b>🔀 Shuffle</b> mixes the order.</li>
+      <li><b>🔊</b> reads the word or the example aloud (Swiss German voice if your system has one).</li>
+      <li><b>⬇ Export for Anki</b> downloads the words you have filtered as a tab-separated file. In Anki: File › Import, pick the file, check that field 1 = Front and field 2 = Back.</li>
+      <li>Print a filtered list from the browser for paper review; English is always shown in print.</li>
+    </ul>
+  </section>
+</main>
+<footer class="wrap foot">
+  Sources: IDS Mannheim DeReWo, Leipzig Corpora Collection, Goethe-Institut word lists, Wiktionary-derived noun data. See <code>_data/SOURCES.md</code>.
+</footer>
+<script src="data/lists.js"></script>
+<script>
+  VocabApp.hub({ lists: window.VOCAB_LISTS, mount: document.getElementById('hub') });
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+  }
+</script>
+</body>
+</html>

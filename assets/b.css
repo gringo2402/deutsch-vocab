@@ -1,0 +1,87 @@
+/* List B (verbs) extras on top of vocab.css: auxiliary chips, prefix highlight, section switch, principal-parts drill.
+   haben = teal, sein = amber (kept away from the der/die/das blue, red and green). */
+
+:root {
+  --haben: #0f766e;
+  --haben-soft: #ccfbf1;
+  --sein: #b45309;
+  --sein-soft: #fef3c7;
+  --pfx: #7c3aed;
+  --pfx-soft: #ede9fe;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --haben: #2dd4bf;
+    --haben-soft: #123b37;
+    --sein: #fbbf24;
+    --sein-soft: #3f2e0b;
+    --pfx: #c4b5fd;
+    --pfx-soft: #2e2550;
+  }
+}
+:root[data-theme="dark"] {
+  --haben: #2dd4bf;
+  --haben-soft: #123b37;
+  --sein: #fbbf24;
+  --sein-soft: #3f2e0b;
+  --pfx: #c4b5fd;
+  --pfx-soft: #2e2550;
+}
+
+/* auxiliary chips (legend and cards) */
+.chip.aux-haben { background: var(--haben); }
+.chip.aux-sein { background: var(--sein); }
+.chip.aux-both { background: linear-gradient(90deg, var(--haben) 0 50%, var(--sein) 50% 100%); }
+.card.aux-haben { border-left-color: var(--haben); }
+.card.aux-sein { border-left-color: var(--sein); }
+.card.aux-both { border-image: linear-gradient(180deg, var(--haben) 0 50%, var(--sein) 50% 100%) 0 0 0 6; }
+
+/* prefixes: separable = filled highlight, inseparable = dotted underline */
+.pfx { color: var(--pfx); background: var(--pfx-soft); border-radius: 4px; padding: 0 .12em; font-weight: 800; }
+.ipfx { text-decoration: underline dotted var(--pfx); text-underline-offset: .18em; text-decoration-thickness: 2px; }
+.refl { color: var(--muted); font-weight: 600; font-size: .7em; margin-right: .25em; }
+.legend .pfx, .legend .ipfx { font-weight: 700; }
+
+/* principal parts strip */
+.pp-strip {
+  display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center;
+  background: var(--surface-2); border-radius: 8px; padding: 6px 8px; cursor: pointer;
+  border: 1px solid transparent; font-size: .95rem;
+}
+.pp-strip:hover { border-color: var(--accent); }
+.pp-strip .pp-part { display: inline-flex; flex-direction: column; line-height: 1.15; min-width: 0; }
+.pp-strip .pp-part small { color: var(--muted); font-size: .68rem; text-transform: uppercase; letter-spacing: .04em; }
+.pp-strip .pp-part b { font-weight: 650; }
+.pp-strip .sep { color: var(--muted); }
+.pp-strip .chip { font-size: .8rem; min-width: 0; }
+.pp-strip .open-hint { margin-left: auto; color: var(--accent); font-size: .8rem; white-space: nowrap; }
+.pattern { font-size: .88rem; color: var(--muted); }
+.pattern b { color: var(--fg); font-weight: 600; }
+.srcnote { font-size: .72rem; color: var(--muted); }
+
+/* section switch */
+.section-switch { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; }
+.section-switch .btn { font-weight: 600; }
+
+/* principal-parts drill: hide parts, tags and tables until the card is tapped */
+.drill-pp .card:not(.pp-shown) .pp-strip > *,
+.drill-pp .card:not(.pp-shown) .tags,
+.drill-pp .card:not(.pp-shown) details.conj { visibility: hidden; }
+.drill-pp .card:not(.pp-shown) .pp-strip { position: relative; min-height: 2.6em; }
+.drill-pp .card:not(.pp-shown) .pp-strip::after {
+  content: "say: er … · Präteritum · Perfekt – tap to check"; position: absolute; inset: 0; display: flex; align-items: center;
+  padding: 0 8px; color: var(--muted); font-size: .85rem; border: 1px dashed var(--border); border-radius: 8px;
+}
+.drill-pp .card:not(.pp-shown) .lemma .pfx { color: inherit; background: none; }
+.drill-pp .card:not(.pp-shown).aux-haben,
+.drill-pp .card:not(.pp-shown).aux-sein { border-left-color: var(--border); }
+.drill-pp .card:not(.pp-shown).aux-both { border-image: none; border-left-color: var(--border); }
+
+.conj-grid td:last-child { overflow-wrap: anywhere; }
+.conj-grid td:first-child { white-space: nowrap; overflow-wrap: normal; width: 1%; font-size: .85em; padding-right: 6px; }
+
+@media print {
+  .section-switch { display: none !important; }
+  .drill-pp .card .pp-strip > *, .drill-pp .card .tags, .drill-pp .card details.conj { visibility: visible !important; }
+  .drill-pp .card .pp-strip::after, .pp-strip .open-hint { display: none !important; }
+}

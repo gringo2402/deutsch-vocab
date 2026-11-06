@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>B · German verbs</title>
+<meta name="description" content="500 German verbs: the 200 most frequent plus 300 business and IT verbs, with principal parts, haben or sein, separable prefixes, cases and prepositions, and six conjugation tables. Swiss spelling.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%87%A9%F0%9F%87%AA%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/vocab.css">
+<link rel="stylesheet" href="assets/b.css">
+<script src="assets/vocab.js"></script>
+<script src="assets/b.js"></script>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1115" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Deutsch">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap">
+    <div class="crumbs"><a href="index.html">Deutsch vocab</a> › List B</div>
+    <h1>B · Verbs: 200 core + 300 business &amp; tech</h1>
+    <p class="lede">The 200 most frequent German verbs (corpus rank) and 300 verbs that are typical of business and IT texts. Each card shows the principal parts you need to build every tense: <b>er-form · Präteritum · Perfekt</b>. Tap the strip for six full tables. Swiss spelling (ss, never the Eszett).</p>
+    <div class="legend" aria-label="Legend">
+      <span class="chip aux-haben">hat</span> Perfekt with haben
+      <span class="chip aux-sein">ist</span> Perfekt with sein
+      <span class="chip aux-both">hat/ist</span> both
+      <span><span class="pfx">um</span>setzen</span> separable prefix
+      <span><span class="ipfx">ver</span>kaufen</span> inseparable prefix
+      <span class="level A1">A1</span><span class="level A2">A2</span><span class="level B1">B1</span><span class="level up">above B1</span>
+      <span id="voice-status"></span>
+    </div>
+    <div class="section-switch no-print" id="section-switch" aria-label="Section"></div>
+  </div>
+</header>
+<div class="wrap" id="app"></div>
+<footer class="wrap foot">
+  Core 200: IDS Mannheim DeReWo lemma list (2012) with verb tags from the DeReKo-2014 STT word list (CC BY-NC 3.0). Business &amp; tech 300: keyness in a corpus of 440 German Wikipedia articles on business and IT (CC BY-SA 4.0) against the Leipzig Corpora Collection. Forms: Wiktionary via kaikki.org (CC BY-SA). Levels: Goethe-Institut word lists A1, A2, B1. Translations, notes and example sentences are original. Details in <code>_data/SOURCES.md</code>.
+</footer>
+<script src="data/themes.js"></script>
+<script src="data/b.js"></script>
+<script>
+  (function () {
+    var filters = [
+      { key: 'section', label: 'Section', get: function (e) { return e.section; } },
+      { key: 'auxiliary', label: 'Perfekt with', get: function (e) { return e.auxiliary; } },
+      { key: 'separable', label: 'Prefix', get: function (e) { return e.prefix_type === 'none' ? 'no prefix' : e.prefix_type; } },
+      { key: 'reflexive', label: 'Reflexive', get: function (e) { return e.reflexive ? 'sich-verb' : 'not reflexive'; } }
+    ];
+    var mount = document.getElementById('app');
+    var app = VocabApp.init({
+      list: 'b', data: window.VOCAB_B, themes: window.VOCAB_THEMES,
+      mount: mount, exportName: 'deutsch-b-verbs', filters: filters
+    });
+    BVerbs.init({ data: window.VOCAB_B, mount: mount, app: app, filters: filters, exportName: 'deutsch-b-verbs' });
+  })();
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+  }
+</script>
+</body>
+</html>
