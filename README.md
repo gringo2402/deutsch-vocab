@@ -9,7 +9,7 @@ German vocabulary lists for the step from **A2 to B1**, built for work in busine
 | [A · Core 1,000 words](https://gringo2402.github.io/deutsch-vocab/a-core-1000.html) | The 1,000 most frequent German words with gender colours, plurals, CEFR level, theme, usage tips and example sentences |
 | [B · Verbs](https://gringo2402.github.io/deutsch-vocab/b-verbs.html) | 500 verbs (200 most frequent + 300 for business and IT) with principal parts, haben/sein, prefixes, cases and prepositions, and six-tense tables |
 | [C · Business & tech words](https://gringo2402.github.io/deutsch-vocab/c-business-tech.html) | 300 nouns, adjectives and phrases for meetings, projects, finance and IT, Swiss usage included |
-| [🏫 Classroom](https://gringo2402.github.io/deutsch-vocab/classroom.html) | One grammar topic a week from class: the logic, rules, exceptions and common mistakes, with German examples, English translations and a short self-check |
+| [🏫 Classroom](https://gringo2402.github.io/deutsch-vocab/classroom.html) | Grammar topics from class: the logic, rules, exceptions and common traps, with German examples, translations and a short self-check |
 | [📝 Homework (Hausaufgaben)](https://gringo2402.github.io/deutsch-vocab/hausaufgaben.html) | Homework exercises typed out as on the page: try each gap, then show the solution with an English translation and a one-line explanation |
 | [📒 Course vocabulary (Lernwortschatz)](https://gringo2402.github.io/deutsch-vocab/lernwortschatz.html) | The course book's word list, lesson by lesson: article, plural or verb forms, the book's example sentence and English translations, with Test me and Anki export |
 

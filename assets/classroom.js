@@ -1,4 +1,4 @@
-/* Classroom module: weekly grammar topics. Loaded after assets/vocab.js and data/classroom.js.
+/* Classroom module: grammar topics from class, numbered in teaching order. Loaded after assets/vocab.js and data/classroom.js.
    No dependencies; works from file:// and offline. Topic data: _build/content_classroom/*.json,
    built into data/classroom.json + .js by _build/build_classroom.py (schema in _build/README.md).
    Routing: classroom.html lists all topics; classroom.html#<topic-id> opens one topic.
@@ -7,7 +7,7 @@
 (function () {
   'use strict';
 
-  var TOPICS = (window.VOCAB_CLASSROOM || []).slice().sort(function (a, b) { return b.week - a.week; });
+  var TOPICS = (window.VOCAB_CLASSROOM || []).slice().sort(function (a, b) { return b.number - a.number; });
   var app = document.getElementById('app');
   var Speech = window.VocabApp ? window.VocabApp.speech : null;
   var I = window.I18n || { t: function (k, v, f) { return f != null ? f : k; } };
@@ -69,7 +69,7 @@
   function norm(s) {
     return String(s || '').toLowerCase()
       .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(new RegExp(String.fromCharCode(223), 'g'), 'ss')
-      .replace(/[.,!?;:"'«»„“”]/g, ' ').replace(/\s+/g, ' ').trim();
+      .replace(/[.,!?;:"'«»„“”()]/g, ' ').replace(/\s+/g, ' ').trim();
   }
   function selfcheck(topic) {
     var sc = topic.selfcheck;
@@ -126,7 +126,7 @@
     if (!TOPICS.length) { app.innerHTML = '<p>' + esc(T('cr.none')) + '</p>'; return; }
     app.innerHTML = '<div class="hub cr-list">' + TOPICS.map(function (t) {
       return '<a class="hub-card" href="#' + esc(t.id) + '">' +
-        '<span class="status ready">' + esc(T('cr.week', { n: t.week })) + ' · ' + esc(t.level) + '</span>' +
+        '<span class="status ready">' + esc(T('cr.topic', { n: t.number })) + ' · ' + esc(t.level) + '</span>' +
         '<h2>' + md(t.title) + '</h2><p class="cr-en">' + md(t.title_en) + '</p>' +
         '<p>' + md(t.summary) + '</p><p class="cr-date">' + esc(T('cr.added', { d: date(t.added) })) + '</p></a>';
     }).join('') + '</div>';
@@ -136,7 +136,7 @@
     document.title = t.title + ' · ' + T('list.classroom.title');
     var toc = ['purpose', 'logic', 'rules', 'exceptions', 'mistakes', 'examples', 'selfcheck', 'sources'].map(function (k) { return [k, T('cr.' + k)]; });
     var h = '<p class="crumbs cr-back"><a href="#">' + esc(T('cr.back')) + '</a></p>' +
-      '<div class="cr-head"><span class="status ready">' + esc(T('cr.week', { n: t.week })) + ' · ' + esc(t.level) + '</span>' +
+      '<div class="cr-head"><span class="status ready">' + esc(T('cr.topic', { n: t.number })) + ' · ' + esc(t.level) + '</span>' +
       '<h2 class="cr-title">' + md(t.title) + '</h2><p class="cr-en">' + md(t.title_en) + ' · ' + esc(T('cr.addedLower', { d: date(t.added) })) + '</p>' +
       '<nav class="cr-toc no-print" aria-label="' + esc(T('cr.sec.aria')) + '">' + toc.map(function (s) {
         return '<a class="btn" href="#' + esc(t.id) + '/' + s[0] + '">' + s[1] + '</a>';
