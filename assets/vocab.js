@@ -172,7 +172,9 @@
       h += '<div class="plural">' + (e.plural ? esc(T('card.plural')) + ' <span class="chip pl">die</span> <b lang="de">' + esc(e.plural) + '</b>' : esc(T('card.noPlural'))) + '</div>';
     }
     h += verbBlock(e);
-    h += '<div class="en hideable"><ol>' + e.en.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ol></div>';
+    // e.dict (language files only): 'ok' when the word translation matches the German Wiktionary or was reviewed.
+    var flag = e.dict && e.dict !== 'ok' ? '<span class="dict-flag" title="' + esc(T('dict.flag')) + '" aria-label="' + esc(T('dict.flag')) + '">⚠</span>' : '';
+    h += '<div class="en hideable">' + flag + '<ol>' + e.en.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ol></div>';
     if (e.note) h += '<div class="note hideable"><span>' + esc(e.note) + '</span></div>';
     if (e.example && e.example.de) {
       h += '<div class="example"><span class="de" lang="de">' + esc(e.example.de) + '</span>' + sayBtn(e.example.de, T('card.sayEx')) +

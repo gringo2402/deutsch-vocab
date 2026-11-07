@@ -16,4 +16,3 @@
 .lws-answer { border-left: 3px solid var(--das); padding-left: 8px; margin-top: 6px; }
 
 @media print { .lws-tip { display: none; } }
-.list-lws .lws-dict { float: right; cursor: help; font-size: .9rem; }

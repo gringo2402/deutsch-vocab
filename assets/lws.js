@@ -2,8 +2,7 @@
    Data: data/lws[.<lang>].js (word entries in the shared list schema) and data/lws_meta[.<lang>].js (batches and
    tips), built by _build/build_lws.py and _build/i18n.py from _build/content_lws/*.json (schema in _build/README.md).
    - Decorates the cards that vocab.js renders: the headword as the book prints it, section and exercise
-     reference, "also in A/B/C" links, word-field tag, a badge when the example is not from the book, and ⚠ when
-     the word translation in this language is not yet confirmed by the German Wiktionary (e.dict).
+     reference, "also in A/B/C" links, word-field tag, a badge when the example is not from the book.
    - Renders the batches' tips (small tasks from the book) above the list, answers hidden until asked.
    - Filter values are language-neutral (lesson number, batch number); show() turns them into labels.
    Notes and tips allow *italic* for German words.
@@ -28,7 +27,7 @@
   function lessonValue(e) { return String(e.lesson); }
   function lessonShow(v) {
     var b = meta().filter(function (x) { return String(x.lesson) === v; })[0] || {};
-    return 'Lektion ' + v + (b.lesson_title ? ' · ' + b.lesson_title : '');
+    return T('lws.lesson', { n: v }) + (b.lesson_title ? ' · ' + b.lesson_title : '');
   }
   function batchValue(e) { return String(e.batch); }
   function batchShow(v) {
@@ -41,7 +40,7 @@
     list = list.slice().sort(function (a, b) { return b.batch - a.batch; }).filter(function (b) { return b.tips && b.tips.length; });
     box.innerHTML = list.map(function (b) {
       return b.tips.map(function (t) {
-        return '<details class="lws-tip"><summary>💡 ' + esc(T('lws.tip')) + ' · Lektion ' + esc(b.lesson) + ': <span lang="de">' + md(t.text) + '</span></summary>' +
+        return '<details class="lws-tip"><summary>💡 ' + esc(T('lws.tip')) + ' · ' + esc(T('lws.lesson', { n: b.lesson })) + ': <span lang="de">' + md(t.text) + '</span></summary>' +
           '<p class="lws-tip-en">' + md(t.text_en) + '</p>' +
           '<p lang="de"><span class="lws-tag">' + esc(T('lws.example')) + '</span> ' + md(t.example) + '</p>' +
           '<button type="button" class="btn lws-show" aria-expanded="false">' + esc(T('lws.showAnswer')) + '</button>' +
@@ -91,15 +90,6 @@
         p.title = T('lws.book.t');
         p.innerHTML = '📖 ' + esc(e.book);
         head.parentNode.insertBefore(p, head.nextSibling);
-      }
-      var en = card.querySelector('.en');
-      if (en && e.dict && e.dict !== 'ok') {
-        var w = document.createElement('span');
-        w.className = 'lws-dict';
-        w.title = T('dict.flag');
-        w.setAttribute('aria-label', T('dict.flag'));
-        w.textContent = '⚠';
-        en.insertBefore(w, en.firstChild);
       }
       var note = card.querySelector('.note > span');
       if (note && e.note) note.innerHTML = md(e.note);

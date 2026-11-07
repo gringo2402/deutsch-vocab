@@ -52,7 +52,10 @@
     if (lang === 'en') return;
     var strings = UI.strings[lang] || {};
     Array.prototype.forEach.call((root || document).querySelectorAll('[data-i18n]'), function (el) {
-      var s = strings[el.getAttribute('data-i18n')];
+      var key = el.getAttribute('data-i18n');
+      var s = strings[key];
+      // A page script may already have set a more specific tab title (e.g. "Konjunktiv · Compiti"): keep it.
+      if (el.tagName === 'TITLE' && el.innerHTML !== (UI.strings.en || {})[key]) return;
       if (s != null) el.innerHTML = s;
     });
     Array.prototype.forEach.call((root || document).querySelectorAll('[data-i18n-attr]'), function (el) {
