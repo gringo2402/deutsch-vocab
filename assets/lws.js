@@ -37,7 +37,7 @@
 
   function tips(list, box) {
     if (!box) return;
-    list = list.slice().sort(function (a, b) { return b.batch - a.batch; }).filter(function (b) { return b.tips && b.tips.length; });
+    list = list.slice().sort(function (a, b) { return a.lesson - b.lesson || a.batch - b.batch; }).filter(function (b) { return b.tips && b.tips.length; });
     box.innerHTML = list.map(function (b) {
       return b.tips.map(function (t) {
         return '<details class="lws-tip"><summary>💡 ' + esc(T('lws.tip')) + ' · ' + esc(T('lws.lesson', { n: b.lesson })) + ': <span lang="de">' + md(t.text) + '</span></summary>' +

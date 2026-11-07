@@ -14,7 +14,7 @@
   var POS_LABEL = {
     noun: 'noun', verb: 'verb', adj: 'adjective', adv: 'adverb', pron: 'pronoun', art: 'article',
     det: 'determiner', num: 'number', prep: 'preposition', contr: 'prep. + article', conj: 'conjunction',
-    part: 'particle', interj: 'interjection'
+    part: 'particle', interj: 'interjection', prefix: 'word part'
   };
   var TENSES = [['praesens', 'Präsens'], ['praeteritum', 'Präteritum'], ['perfekt', 'Perfekt'],
     ['plusquamperfekt', 'Plusquamperfekt'], ['futur1', 'Futur I'], ['konjunktiv2', 'Konjunktiv II']];
