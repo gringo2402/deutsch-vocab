@@ -196,6 +196,7 @@
         front += '<br><small>' + clean(pp.praesens_er + ' · ' + pp.praeteritum_er + ' · ' + pp.partizip2) + '</small>';
       }
       var back = clean(e.en.join('; '));
+      if (e.syn && e.syn.length) back += '<br><small>≈ ' + clean(e.syn.map(function (s) { return s.w; }).join(', ')) + '</small>';
       if (e.example && e.example.de) back += '<br><br><i>' + clean(e.example.de) + '</i><br>' + clean(e.example.en);
       if (e.note) back += '<br><small>' + clean(e.note) + '</small>';
       var tags = ['vocab-' + listName, 'level-' + e.level.replace(/ /g, '-'), 'theme-' + e.theme].join(' ');
@@ -225,7 +226,7 @@
 
     data.forEach(function (e) {
       var parts = [e.lemma, e.article, e.plural, (e.en || []).join(' '), e.note,
-        e.example && e.example.de, e.example && e.example.en];
+        e.example && e.example.de, e.example && e.example.en, (e.syn || []).map(function (s) { return s.w; }).join(' ')];
       if (e.principal_parts) for (var k in e.principal_parts) parts.push(e.principal_parts[k]);
       e._s = fold(parts.filter(Boolean).join(' | '));
     });

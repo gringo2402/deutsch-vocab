@@ -2,7 +2,8 @@
    Data: data/lws[.<lang>].js (word entries in the shared list schema) and data/lws_meta[.<lang>].js (batches and
    tips), built by _build/build_lws.py and _build/i18n.py from _build/content_lws/*.json (schema in _build/README.md).
    - Decorates the cards that vocab.js renders: the headword as the book prints it, section and exercise
-     reference, "also in A/B/C" links, word-field tag, a badge when the example is not from the book.
+     reference, "also in A/B/C" links, word-field tag, a badge when the example is not from the book, and the
+     synonyms line under the translation (German, ordered by Goethe level by the build; CH/DE/AT tag for regional words).
    - Renders the batches' tips (small tasks from the book) above the list, answers hidden until asked.
    - Filter values are language-neutral (lesson number, batch number); show() turns them into labels.
    Notes and tips allow *italic* for German words.
@@ -90,6 +91,16 @@
         p.title = T('lws.book.t');
         p.innerHTML = '📖 ' + esc(e.book);
         head.parentNode.insertBefore(p, head.nextSibling);
+      }
+      var en = card.querySelector('.en');
+      if (en && e.syn && e.syn.length) {
+        var sy = document.createElement('div');
+        sy.className = 'lws-syn hideable';
+        sy.innerHTML = '<span><span class="lws-tag">' + esc(T('lws.syn')) + '</span> <span lang="de">' +
+          e.syn.map(function (s) {
+            return esc(s.w) + (s.r ? ' <span class="lws-reg" title="' + esc(T('lws.reg.' + s.r)) + '">' + esc(s.r) + '</span>' : '');
+          }).join(' · ') + '</span></span>';
+        en.parentNode.insertBefore(sy, en.nextSibling);
       }
       var note = card.querySelector('.note > span');
       if (note && e.note) note.innerHTML = md(e.note);

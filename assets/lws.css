@@ -6,6 +6,8 @@
 .list-lws .lws-also { border-color: var(--accent); color: var(--accent); text-decoration: none; }
 .list-lws .lws-own { display: block; font-size: .72rem; color: var(--muted); font-style: italic; }
 .list-lws .note em { font-style: italic; }
+.list-lws .lws-syn { font-size: .92rem; margin: 2px 0 4px; overflow-wrap: anywhere; }
+.list-lws .lws-reg { font-size: .66rem; border: 1px solid var(--border); border-radius: 4px; padding: 0 3px; color: var(--muted); vertical-align: 1px; }
 
 .lws-tip { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; margin: 10px 0 4px; font-size: .93rem; }
 .lws-tip summary { cursor: pointer; font-weight: 600; }
