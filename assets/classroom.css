@@ -62,6 +62,7 @@
 @media (max-width: 520px) {
   .cr-table { font-size: .82rem; }
   .cr-table th, .cr-table td { padding: 4px 3px; }
+  .cr-table tbody th { white-space: normal; }
   .cr-block { padding: 12px; }
 }
 
