@@ -78,6 +78,13 @@
       return used.indexOf(i) >= 0 ? '<s class="ha-chip used" title="' + esc(T('ha.used.t')) + '">' + esc(w) + '</s>' : '<span class="ha-chip">' + esc(w) + '</span>';
     }).join('') + '</div>';
   }
+  function readingBlock(e) {
+    if (!e.reading) return '';
+    return '<div class="ha-reading" lang="de">' + e.reading.map(function (r) {
+      return '<div class="ha-rd">' + (r.label ? '<div class="ha-rd-label">' + md(r.label) + '</div>' : '') +
+        String(r.text).split('\n').map(function (para) { return '<p>' + md(para) + '</p>'; }).join('') + '</div>';
+    }).join('') + '</div>';
+  }
   function phrasesBlock(e) {
     if (!e.phrases) return '';
     return '<div class="ha-phrases">' + e.phrases.map(function (p) { return '<div>' + md(p) + '</div>'; }).join('') + '</div>';
@@ -158,7 +165,7 @@
           h += '<p class="ha-part"><b>' + (e.instruction ? '' : esc(e.no) + ' ') + esc(e.part) + '</b> ' + md(e.part_instruction) + '</p>' +
             '<p class="ha-en">' + md(e.part_instruction_en) + '</p>';
         }
-        h += boxBlock(e) + phrasesBlock(e) + exampleBlock(e.example) +
+        h += readingBlock(e) + boxBlock(e) + phrasesBlock(e) + exampleBlock(e.example) +
           '<ol class="ha-items">' + e.items.map(function (it, ii) { return itemBlock(set, it, pi + '-' + ei + '-' + ii, saved); }).join('') + '</ol></article>';
       });
       h += '</section>';
