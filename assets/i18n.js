@@ -1,4 +1,4 @@
-/* Base language (English, Italiano, Français, Español). Loaded first on every page, after data/ui.js.
+/* Base language (English plus the languages in _build/langs/, listed in data/ui.js). Loaded first on every page, after data/ui.js.
    No dependencies; works from file:// and offline.
    - I18n.t(key, vars) looks up an interface string (data/ui.js, built by _build/i18n.py from
      _build/i18n/ui.<lang>.json); missing strings fall back to English.
@@ -76,7 +76,7 @@
     UI.langs.forEach(function (l) {
       var o = document.createElement('option');
       o.value = l.code;
-      o.textContent = l.flag + ' ' + l.label;
+      o.textContent = l.flag + ' ' + l.label + (l.draft ? ' (draft)' : '');  // drafts appear only in data/ and _preview/
       s.appendChild(o);
     });
     s.value = lang;
