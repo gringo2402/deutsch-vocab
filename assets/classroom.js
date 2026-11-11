@@ -134,7 +134,13 @@
 
   function topicView(t) {
     document.title = t.title + ' · ' + T('list.classroom.title');
-    var toc = ['purpose', 'logic', 'rules', 'exceptions', 'mistakes', 'examples', 'selfcheck', 'sources'].map(function (k) { return [k, T('cr.' + k)]; });
+    var keys = ['purpose', 'logic', 'rules', 'exceptions'];
+    if (t.phrases && t.phrases.length) keys.push('phrases');
+    if (t.texts && t.texts.length) keys.push('texts');
+    keys = keys.concat(['mistakes', 'examples', 'selfcheck']);
+    if (t.links && t.links.length) keys.push('links');
+    keys.push('sources');
+    var toc = keys.map(function (k) { return [k, T('cr.' + k)]; });
     var h = '<p class="crumbs cr-back"><a href="#">' + esc(T('cr.back')) + '</a></p>' +
       '<div class="cr-head"><span class="status ready">' + esc(T('cr.topic', { n: t.number })) + ' · ' + esc(t.level) + '</span>' +
       '<h2 class="cr-title">' + md(t.title) + '</h2><p class="cr-en">' + md(t.title_en) + ' · ' + esc(T('cr.addedLower', { d: date(t.added) })) + '</p>' +
@@ -145,6 +151,16 @@
     h += section('logic', T('cr.logic'), '<ul class="cr-logic">' + t.logic.map(function (p) { return '<li>' + md(p) + '</li>'; }).join('') + '</ul>');
     h += section('rules', T('cr.rules'), t.rules.map(function (r, i) { return block(t, r, i + 1); }).join(''));
     h += section('exceptions', T('cr.exceptions'), t.exceptions.map(function (r) { return block(t, r); }).join(''));
+    if (t.phrases && t.phrases.length) {
+      h += section('phrases', T('cr.phrases'), t.phrases.map(function (g) {
+        return '<article class="cr-block"><h3>' + md(g.title) + '</h3>' + examples(g.items) + '</article>';
+      }).join(''));
+    }
+    if (t.texts && t.texts.length) {
+      h += section('texts', T('cr.texts'), t.texts.map(function (x) {
+        return '<article class="cr-block"><h3>' + md(x.title) + '</h3><p class="cr-text-note">' + md(x.note) + '</p>' + examples(x.lines) + '</article>';
+      }).join(''));
+    }
     h += section('mistakes', T('cr.mistakes'), '<ul class="cr-mistakes">' + t.mistakes.map(function (m) {
       return '<li><div class="wrong">✗ ' + md(m.wrong) + '</div><div class="right">✓ ' + md(m.right) + sayBtn(m.right) + '</div>' +
         '<div class="cr-why">' + md(m.why) + '</div></li>';
@@ -152,6 +168,11 @@
     h += section('examples', T('cr.examples'), examples(t.examples));
     if (t.later) h += '<aside class="cr-later"><b>' + esc(T('cr.later')) + '</b> ' + md(t.later) + '</aside>';
     h += section('selfcheck', T('cr.selfcheck'), selfcheck(t));
+    if (t.links && t.links.length) {
+      h += section('links', T('cr.links'), '<ul class="cr-links">' + t.links.map(function (l) {
+        return '<li><a href="' + esc(l.href) + '">' + md(l.text) + '</a></li>';
+      }).join('') + '</ul>');
+    }
     h += section('sources', T('cr.sources'), '<ul>' + t.sources.map(function (s) {
       return '<li><a href="' + esc(s.url) + '" rel="noopener" target="_blank">' + esc(s.title) + '</a>' + (s.note ? ' · ' + md(s.note) : '') + '</li>';
     }).join('') + '</ul>');
