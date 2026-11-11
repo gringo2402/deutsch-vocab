@@ -23,7 +23,7 @@ German vocabulary lists for the step from **A2 to B1**, built for work in busine
 
 ## Study features
 
-- **🌐 Base language:** English, Italiano, Français, Español or 中文 (简体) for translations, explanations and buttons (top of every page). Classroom, Hausaufgaben and Lernwortschatz are fully translated; lists A–C are in English for now.
+- **🌐 Base language:** English, Italiano, Français, Español, 中文 (简体) or Polski for translations, explanations and buttons (top of every page). Classroom, Hausaufgaben and Lernwortschatz are fully translated; lists A–C are in English for now.
 - **Filter** by theme, level or word type, or search in German or English.
 - **🎯 Test me** hides the English; tap a card to check. **🔀 Shuffle** mixes the order.
 - **🔊** reads a word or example aloud with the device's German voice (install one in the phone's text-to-speech settings if it sounds wrong).
